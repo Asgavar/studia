@@ -1,0 +1,42 @@
+             read  1
+             load  1
+             add   =1          #najwyzszy indeks to n+1
+             store 1
+             load  =2
+             store 35          #i, licznik do iterowania
+readloop:    load  35
+             sub   1
+             jgtz  exitread
+             read  ^35
+             load  35
+             add   =1
+             store 35
+             jump  readloop
+exitread:    load  2
+             div   =2
+             mult  =2
+             store 36          #(a1 div 2) * 2
+             load  2
+             sub   36
+             store 36          #od teraz 36 to wyjscie do porownywania
+             load  =3
+             store 35          #przesun i na drugi element
+compareloop: load  ^35
+             sub   1
+             jgtz  succeeded
+             load  ^35
+             div   =2
+             mult  =2
+             store 37
+             load  ^35
+             sub   37
+             sub   36
+             jzero incrandgoto
+             write =0          #jesli reszty byly inne
+             halt  
+incrandgoto: load  35
+             add   =1
+             store 35
+             jump  compareloop
+succeeded:   write =1          #gdy wszystkie przeszly
+             halt  

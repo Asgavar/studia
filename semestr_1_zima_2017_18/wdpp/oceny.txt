@@ -1,0 +1,38 @@
+przedmiot: Matematyka
+Jasio 2,2,2,1,2,3,4
+Małgosia 4,5,6,6,5
+Jasio 2
+Małgosia 4,5,6,6
+Zuzia 4,4,4
+Zuzia 5,5,5
+Kubuś 1,1,1,1
+Kubuś 2,2
+
+przedmiot: Język polski
+Jasio 5,5
+Małgosia 4,4
+Zuzia 4,4
+Kubuś 2,2,2,2
+Kubuś 1,1
+
+przedmiot: Biologia
+Jasio 3,3,3
+Małgosia 6
+Kubuś 3
+Zuzia 3,4,5,6
+Zuzia 3,4,5
+
+przedmiot: Historia
+Jasio 4,5,4,5
+Jasio 5,5,4,4
+Małgosia 3
+Zuzia 6,6
+Kubuś 2
+Zuzia 5
+
+przedmiot: Kurs programowania w Pythonie
+Jasio 4,5,4,5
+Jasio 5,5,4,4
+Zuzia 6,6
+Kubuś 2
+Zuzia 5

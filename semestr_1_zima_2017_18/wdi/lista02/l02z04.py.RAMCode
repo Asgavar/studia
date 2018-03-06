@@ -1,0 +1,32 @@
+                 read  1               #n
+                 load  1
+                 add   =1              #numer najwyzszego indeksu (n+1)
+                 store 1
+                 load  =2
+                 store 35              #i (licznik)
+readloop:        load  35
+                 sub   1
+                 jgtz  exitreadloop
+                 read  ^35
+                 load  35
+                 add   =1
+                 store 35
+                 jump  readloop
+exitreadloop:    load  =2              #tak naprawde zaczynamy od 2. pozycji, bo sprawdzane sa poprednie
+                 store 36              #36 to wskaznik na i
+compareloop:     load  36
+                 add   =1              # na starcie w 36 jest =3
+                 store 36
+                 load  36
+                 sub   1
+                 jgtz  exitcompareloop
+                 load  36
+                 sub   =1
+                 store 37              #37 to wskaznik na i-1
+                 load  ^36
+                 sub   ^37
+                 jgtz  compareloop
+                 write =0              #ktoras z liczb nie byla scisle wieksza od poprzedniej
+                 halt  
+exitcompareloop: write =1
+                 halt  
