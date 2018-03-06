@@ -1,0 +1,10 @@
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/bin/Debug/netcoreapp2.0/strumienie_liczb.deps.json
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/bin/Debug/netcoreapp2.0/strumienie_liczb.runtimeconfig.json
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/bin/Debug/netcoreapp2.0/strumienie_liczb.runtimeconfig.dev.json
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/bin/Debug/netcoreapp2.0/strumienie_liczb.dll
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/bin/Debug/netcoreapp2.0/strumienie_liczb.pdb
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/obj/Debug/netcoreapp2.0/strumienie_liczb.csproj.CoreCompileInputs.cache
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/obj/Debug/netcoreapp2.0/strumienie_liczb.AssemblyInfoInputs.cache
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/obj/Debug/netcoreapp2.0/strumienie_liczb.AssemblyInfo.cs
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/obj/Debug/netcoreapp2.0/strumienie_liczb.dll
+/home/asgavar/Dropbox/studia/progob/lista02/strumienie_liczb/obj/Debug/netcoreapp2.0/strumienie_liczb.pdb

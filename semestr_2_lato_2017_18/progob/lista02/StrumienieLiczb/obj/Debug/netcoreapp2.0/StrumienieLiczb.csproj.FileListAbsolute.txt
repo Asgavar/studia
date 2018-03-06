@@ -1,0 +1,10 @@
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/bin/Debug/netcoreapp2.0/StrumienieLiczb.deps.json
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/bin/Debug/netcoreapp2.0/StrumienieLiczb.runtimeconfig.json
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/bin/Debug/netcoreapp2.0/StrumienieLiczb.runtimeconfig.dev.json
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/bin/Debug/netcoreapp2.0/StrumienieLiczb.dll
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/bin/Debug/netcoreapp2.0/StrumienieLiczb.pdb
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/obj/Debug/netcoreapp2.0/StrumienieLiczb.csproj.CoreCompileInputs.cache
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/obj/Debug/netcoreapp2.0/StrumienieLiczb.AssemblyInfoInputs.cache
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/obj/Debug/netcoreapp2.0/StrumienieLiczb.AssemblyInfo.cs
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/obj/Debug/netcoreapp2.0/StrumienieLiczb.dll
+/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/obj/Debug/netcoreapp2.0/StrumienieLiczb.pdb
