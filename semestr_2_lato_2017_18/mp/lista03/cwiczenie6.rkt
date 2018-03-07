@@ -22,14 +22,28 @@
   (iter '() (length xs)))
 
 
-;; TODO
+(define (all-but-kth xs k)
+  (define (iter accum current)
+    (if (= current (length xs))
+        accum
+        (if (not (= current k))
+            (iter (append accum (list (list-ref xs current))) (+ current 1))
+            (iter accum (+ current 1)))))
+  (iter '() 0))
+
+
 (define (all-permutations xs)
-  (if (or (null? xs)
-          (= (length xs) 1))
-      xs
-      (map (lambda (perm) (append (n-on-each-position perm (car xs)) (all-permutations (cdr xs)))))))
+  (define (perm-iter accum curr-index)
+    (if (= curr-index (length xs))
+        accum
+        (perm-iter (append accum (n-on-each-position (all-but-kth xs curr-index) (list-ref xs curr-index))) (+ curr-index 1))))
+  (perm-iter '() 0))
 
 
-(n-on-each-position (list 1 1 1 1) 7)
+;(n-on-each-position (list 1 1 1 1) 7)
+
+;(all-but-kth (list 1 2 3 4) 2)
 
 (all-permutations (list 1 2 3 4))
+(all-permutations '())
+(all-permutations (list 42))
