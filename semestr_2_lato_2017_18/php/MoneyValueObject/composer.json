@@ -1,0 +1,12 @@
+{
+    "name": "asgavar/money-value-object",
+    "authors": [
+        {
+            "name": "Artur Juraszek",
+            "email": "asgavar@gmail.com"
+        }
+    ],
+    "require": {
+        "aura/autoload": "^2.0"
+    }
+}
