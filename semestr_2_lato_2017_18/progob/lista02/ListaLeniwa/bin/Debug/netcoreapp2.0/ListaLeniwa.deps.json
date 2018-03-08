@@ -7,14 +7,27 @@
   "targets": {
     ".NETCoreApp,Version=v2.0": {
       "ListaLeniwa/1.0.0": {
+        "dependencies": {
+          "StrumienieLiczb": "1.0.0"
+        },
         "runtime": {
           "ListaLeniwa.dll": {}
+        }
+      },
+      "StrumienieLiczb/1.0.0": {
+        "runtime": {
+          "StrumienieLiczb.dll": {}
         }
       }
     }
   },
   "libraries": {
     "ListaLeniwa/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "StrumienieLiczb/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

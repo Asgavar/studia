@@ -1,12 +1,12 @@
 using System;
 
-namespace StrumienieLiczb 
+namespace StrumienieLiczb
 {
     /**
      * Nie przeciążam Eos(), ponieważ dziwnym trafem największa liczba
      * zapisywalna na 4 bajtach jest pierwsza.
      */
-    class PrimeStream : IntStream
+    public class PrimeStream : IntStream
     {
         public PrimeStream()
         {

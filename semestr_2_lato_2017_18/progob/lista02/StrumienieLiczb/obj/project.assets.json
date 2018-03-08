@@ -670,11 +670,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/StrumienieLiczb.csproj",
+      "projectUniqueName": "/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista02/StrumienieLiczb/StrumienieLiczb.csproj",
       "projectName": "StrumienieLiczb",
-      "projectPath": "/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/StrumienieLiczb.csproj",
+      "projectPath": "/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista02/StrumienieLiczb/StrumienieLiczb.csproj",
       "packagesPath": "/home/asgavar/.nuget/packages/",
-      "outputPath": "/home/asgavar/Dropbox/studia/progob/lista02/StrumienieLiczb/obj/",
+      "outputPath": "/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista02/StrumienieLiczb/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/opt/dotnet/sdk/NuGetFallbackFolder"

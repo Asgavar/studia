@@ -196,6 +196,19 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
+      },
+      "StrumienieLiczb/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "dependencies": {
+          "Microsoft.NETCore.App": "2.0.0"
+        },
+        "compile": {
+          "bin/placeholder/StrumienieLiczb.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/StrumienieLiczb.dll": {}
+        }
       }
     }
   },
@@ -656,11 +669,17 @@
         "netstandard.library.2.0.0.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
+    },
+    "StrumienieLiczb/1.0.0": {
+      "type": "project",
+      "path": "../StrumienieLiczb/StrumienieLiczb.csproj",
+      "msbuildProject": "../StrumienieLiczb/StrumienieLiczb.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "Microsoft.NETCore.App >= 2.0.0"
+      "Microsoft.NETCore.App >= 2.0.0",
+      "StrumienieLiczb >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -670,11 +689,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/asgavar/Dropbox/studia/progob/lista02/ListaLeniwa/ListaLeniwa.csproj",
+      "projectUniqueName": "/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista02/ListaLeniwa/ListaLeniwa.csproj",
       "projectName": "ListaLeniwa",
-      "projectPath": "/home/asgavar/Dropbox/studia/progob/lista02/ListaLeniwa/ListaLeniwa.csproj",
+      "projectPath": "/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista02/ListaLeniwa/ListaLeniwa.csproj",
       "packagesPath": "/home/asgavar/.nuget/packages/",
-      "outputPath": "/home/asgavar/Dropbox/studia/progob/lista02/ListaLeniwa/obj/",
+      "outputPath": "/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista02/ListaLeniwa/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/opt/dotnet/sdk/NuGetFallbackFolder"
@@ -690,7 +709,11 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista02/StrumienieLiczb/StrumienieLiczb.csproj": {
+              "projectPath": "/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista02/StrumienieLiczb/StrumienieLiczb.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

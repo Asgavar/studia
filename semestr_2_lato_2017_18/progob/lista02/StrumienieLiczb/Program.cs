@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace StrumienieLiczb 
+namespace StrumienieLiczb
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -26,7 +26,7 @@ namespace StrumienieLiczb
             }
             while (wordsSoFar < 10)
             {
-                Console.WriteLine(rws.Next());
+                Console.WriteLine("Losowe słowo: " + rws.Next());
                 ++wordsSoFar;
             }
         }

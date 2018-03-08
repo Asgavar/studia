@@ -1,8 +1,8 @@
 using System;
 
-namespace StrumienieLiczb 
+namespace StrumienieLiczb
 {
-    class RandomStream : IntStream
+    public class RandomStream : IntStream
     {
         private Random rng;
 

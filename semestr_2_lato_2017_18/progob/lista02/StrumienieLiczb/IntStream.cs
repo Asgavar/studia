@@ -2,7 +2,7 @@ using System;
 
 namespace StrumienieLiczb
 {
-    class IntStream
+    public class IntStream
     {
         protected int current;
 

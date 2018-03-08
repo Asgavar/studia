@@ -8,9 +8,9 @@ namespace ListaLeniwa
      */
     class LazyList
     {
-        private int elementCount;
-        private List<int> innerList;
-        private Random rng;
+        protected int elementCount;
+        protected List<int> innerList;
+        protected Random rng;
 
         public LazyList()
         {
@@ -21,13 +21,13 @@ namespace ListaLeniwa
 
         public int Element(int index)
         {
-            if (index >= this.elementCount)
+            if (index >= elementCount)
             {
-                int difference = index - this.elementCount + 1;
-                this.FillInnerList(difference);
-                this.elementCount = index;
+                int difference = index - elementCount + 1;
+                FillInnerList(difference);
+                elementCount = index;
             }
-            return this.innerList[index];
+            return innerList[index];
         }
 
         public int Size()
@@ -35,11 +35,11 @@ namespace ListaLeniwa
             return elementCount;
         }
 
-        private void FillInnerList(int howMany)
+        protected virtual void FillInnerList(int howMany)
         {
             while (howMany >= 0)
             {
-                this.innerList.Add(rng.Next());
+                innerList.Add(rng.Next());
                 --howMany;
             }
         }
