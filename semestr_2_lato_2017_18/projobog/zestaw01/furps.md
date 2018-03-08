@@ -22,8 +22,8 @@
 
 # Pytania
 1.1. Na pewno chodzi o AES, a nie hashowanie? (*Relevant*)  
-1.2. W razie incydentu bezpieczeństwa, kto odbiera uprawnienia superadministratorowi? (*Relevant*)
-1.3. Jakieś przykłady aplikacji, które będą z tego API korzystać? (*Measurable*)
+1.2. W razie incydentu bezpieczeństwa, kto odbiera uprawnienia superadministratorowi? (*Relevant*)  
+1.3. Co to API ma wystawiać? (*Measurable*)
 
 2.1. Ale co to właściwie znaczy, emulator terminala w Javascripcie? (*Specific*)  
 2.2. Jakie ficzery w tych aplikacjach, pełen dostęp do wszystkich elementów systemu? Tylko trochę? (*Measurable*)
