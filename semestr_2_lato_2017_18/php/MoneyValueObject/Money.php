@@ -11,6 +11,7 @@ class Money
 
     private function float_to_value(float $float_value): int
     {
+        echo "float" . $float_value . PHP_EOL;
         $int_value = $float_value * $this->currency->getSubunitsPerUnit();
         // czy otrzymaliśmy liczbę całkowitą?
         if (floor($int_value) == ceil($int_value))

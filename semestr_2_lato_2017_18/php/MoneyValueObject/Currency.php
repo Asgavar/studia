@@ -3,10 +3,6 @@
 namespace Asgavar\MoneyValueObject;
 
 
-/**
- * Właściwie mogłaby chyba być interfejsem implementowanym dla każdej
- * waluty osobno i mającej metodę getUnitsList().
- */
 class Currency
 {
     private $full_name;
