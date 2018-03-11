@@ -1,0 +1,8 @@
+/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Singleton/bin/Debug/netcoreapp2.0/Singleton.deps.json
+/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Singleton/bin/Debug/netcoreapp2.0/Singleton.dll
+/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Singleton/bin/Debug/netcoreapp2.0/Singleton.pdb
+/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Singleton/obj/Debug/netcoreapp2.0/Singleton.csproj.CoreCompileInputs.cache
+/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Singleton/obj/Debug/netcoreapp2.0/Singleton.AssemblyInfoInputs.cache
+/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Singleton/obj/Debug/netcoreapp2.0/Singleton.AssemblyInfo.cs
+/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Singleton/obj/Debug/netcoreapp2.0/Singleton.dll
+/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Singleton/obj/Debug/netcoreapp2.0/Singleton.pdb
