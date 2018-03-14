@@ -1,0 +1,38 @@
+class UsosWebPage {
+
+    public PageLayout pageLayout;
+
+    show() {
+        GradeController.getStudentGradeInfo();
+    }
+}
+
+class GradeController {
+    private Student student;
+    private Mark[] student_marks;
+
+    getStudentGradeInfo() {
+        foreach (course in student.getCourses()) {
+            mark = course.getMark(student);
+            student_marks.add(mark);
+        }
+        usosWebPage.setPageLayout();
+    }
+}
+
+class Student {
+    Courses[] courses;
+
+    getCourses() {
+        return courses;
+    }
+}
+
+class Course {
+    private Student studentToCheck;
+    private Mark[] marks;
+
+    getValue() {
+        return marks[studentToCheck];
+    }
+}
