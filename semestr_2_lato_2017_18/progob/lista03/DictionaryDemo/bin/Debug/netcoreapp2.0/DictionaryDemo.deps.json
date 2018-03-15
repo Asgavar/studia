@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.0",
+    "signature": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.0": {
+      "DictionaryDemo/1.0.0": {
+        "dependencies": {
+          "Dictionary": "1.0.0"
+        },
+        "runtime": {
+          "DictionaryDemo.dll": {}
+        }
+      },
+      "Dictionary/1.0.0": {
+        "runtime": {
+          "Dictionary.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DictionaryDemo/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Dictionary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
