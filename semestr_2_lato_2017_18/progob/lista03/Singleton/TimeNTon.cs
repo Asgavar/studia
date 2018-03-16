@@ -10,7 +10,8 @@ namespace Singleton
         private const int MAX_OBJECT_COUNT = 4;
 
         private static int instanceCount = 0;
-        private static readonly List<TimeNTon> instanceList = new List<TimeNTon>();
+        //private static readonly List<TimeNTon> instanceList = new List<TimeNTon>();
+        private static TimeNTon[] instanceList = new TimeNTon[4];
 
         private int instanceNumber;
 
@@ -39,7 +40,8 @@ namespace Singleton
             if (Enumerable.Range(WORKSHOPS_START_HOUR, WORKSHOPS_END_HOUR)
                     .Contains(currentHour) || instanceCount == 0)
                 {
-                    instanceList.Add(new TimeNTon(instanceCount));
+                    // instanceList.Add(new TimeNTon(instanceCount));
+                    instanceList[instanceCount] = new TimeNTon(instanceCount);
                     ++instanceCount;
                 }
             }
