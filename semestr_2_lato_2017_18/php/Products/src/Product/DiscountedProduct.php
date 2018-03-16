@@ -17,7 +17,7 @@ class DiscountedProduct implements IProduct
     private $product;
     
     
-    public function __construct(Product $product, int $discountInPercents)
+    public function __construct(IProduct $product, int $discountInPercents)
     {
         $discountAsFloat = (100 - $discountInPercents) / 100;
         $this->product = $product;
@@ -27,14 +27,13 @@ class DiscountedProduct implements IProduct
 
     public function getName(): string
     {
-        return $this->product->getName();
+        return "[PRZECENIONY] " . $this->product->getName();
     }
     
     
     public function getPrice(): Money
     {
-        $newPrice = clone $this->product->getPrice();
-        $newPrice->multiply($this->priceModifier);
+        $newPrice = $this->product->getPrice()->multiply($this->priceModifier);
         return $newPrice;
     }
 }

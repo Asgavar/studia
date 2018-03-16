@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit9fc7e7f44dcbeebd8bdad5620ed474af
 {
     public static $prefixLengthsPsr4 = array (
+        'P' => 
+        array (
+            'PHProducts\\' => 11,
+        ),
         'M' => 
         array (
             'Money\\' => 6,
@@ -18,6 +22,10 @@ class ComposerStaticInit9fc7e7f44dcbeebd8bdad5620ed474af
     );
 
     public static $prefixDirsPsr4 = array (
+        'PHProducts\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
         'Money\\' => 
         array (
             0 => __DIR__ . '/..' . '/moneyphp/money/src',

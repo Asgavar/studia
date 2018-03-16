@@ -12,5 +12,8 @@
   "require": {
     "moneyphp/money": "v3.1.3",
     "php-ds/php-ds": "v1.2.0"
+  },
+  "autoload": {
+    "psr-4": {"PHProducts\\": "src/"}
   }
 }

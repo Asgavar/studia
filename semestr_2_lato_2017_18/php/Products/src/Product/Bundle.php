@@ -42,10 +42,10 @@ class Bundle implements IProductCollection, \IteratorAggregate
     }
     
     
-    public function addProduct(Product $product): void
+    public function addProduct(IProduct $product): void
     {
         $this->productsInside->push($product);
-        $this->sumOfPrices->add($product->getPrice());
+        $this->sumOfPrices = $this->sumOfPrices->add($product->getPrice());
     }
     
     
