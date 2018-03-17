@@ -32,9 +32,10 @@ def execute_case(case_tuple):
 
     results = [
         strategy_shoot_everything(space_flotilla, points_func, one_ship_limit),
+        strategy_maximum_flow(space_flotilla, points_func, one_ship_limit),
     ]
 
-    return max(results)
+    # return max(results)
 
 
 def points_gain(a, b, c):
@@ -69,6 +70,26 @@ def strategy_shoot_everything(flotilla, points_func, limit):
     values = map(points_func, flotilla)
     values = actual_points(flotilla, list(values), limit)
     return sum(values)
+
+
+def strategy_maximum_flow(flotilla, points_func, limit):
+    start_nodes = []
+    end_nodes = []
+    node_count = len(flotilla)
+    FINAL_NODE = -42
+
+    # TODO: ostatni punkt ma capacity = 0
+    for x in range(node_count):
+        print(node_count, flotilla)
+        start_nodes.extend([x for y in range(node_count - (x+1))])
+        end_nodes.extend([x+y+1 for y in range(node_count - (x+1))])
+
+    # ostatni pseudowezel
+    start_nodes.append(node_count - 1)
+    end_nodes.append(FINAL_NODE)
+
+    print(start_nodes)
+    print(end_nodes)
 
 
 if __name__ == '__main__':
