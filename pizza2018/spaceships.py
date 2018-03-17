@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from ortools.graph import pywrapgraph
+
 from utils import group
 
 
@@ -75,21 +77,64 @@ def strategy_shoot_everything(flotilla, points_func, limit):
 def strategy_maximum_flow(flotilla, points_func, limit):
     start_nodes = []
     end_nodes = []
+    capacities = []
     node_count = len(flotilla)
-    FINAL_NODE = -42
+    FINAL_NODE = 42
 
     # TODO: ostatni punkt ma capacity = 0
     for x in range(node_count):
         print(node_count, flotilla)
-        start_nodes.extend([x for y in range(node_count - (x+1))])
+        start_nodes.extend([x for y in range(node_count - x)])
         end_nodes.extend([x+y+1 for y in range(node_count - (x+1))])
+        # kazdy wezel jest polaczony z koncowym pseudowezlem
+        end_nodes.append(FINAL_NODE)
 
-    # ostatni pseudowezel
-    start_nodes.append(node_count - 1)
-    end_nodes.append(FINAL_NODE)
+    combo_streak = 1
+
+    # zawsze zaczynamy od pierwszego, bo nic na tym nie tracimy. uff.
+    for edge in range(len(start_nodes)):
+        if end_nodes[edge] == FINAL_NODE:
+            weight = 1
+        else:
+            weight = points_func(flotilla[end_nodes[edge]])
+            start_color = flotilla[start_nodes[edge]]
+            end_color = flotilla[end_nodes[edge]]
+            if start_color == end_color:
+                # ten sam kolor, wiec ciagniemy combo
+                combo_streak += 1
+                print(combo_streak)
+                mult_weight = weight * combo_streak
+                print(f'przed: {weight}')
+                print(f'po: {mult_weight}')
+                weight = mult_weight if mult_weight < limit else limit
+            else:
+                combo_streak = 1
+        capacities.append(weight)
 
     print(start_nodes)
     print(end_nodes)
+    print(capacities)
+
+    max_flow = pywrapgraph.SimpleMaxFlow()
+
+    for x in range(len(start_nodes)):
+        max_flow.AddArcWithCapacity(
+            start_nodes[x],
+            end_nodes[x],
+            capacities[x]
+        )
+
+    while max_flow.Solve(0, FINAL_NODE) != max_flow.OPTIMAL:
+        print(max_flow.OptimalFlow())
+
+    print(max_flow.OptimalFlow())
+    print(f'arcs = {max_flow.NumArcs()}')
+
+    # print(max_flow.Solve(0, FINAL_NODE))
+    # print(max_flow.Solve(0, FINAL_NODE))
+    # print(max_flow.NumArcs())
+    # print(max_flow.OptimalFlow())
+    # print(max_flow.OPTIMAL)
 
 
 if __name__ == '__main__':
