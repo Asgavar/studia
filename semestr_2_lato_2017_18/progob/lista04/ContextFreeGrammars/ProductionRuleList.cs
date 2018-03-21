@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ContextFreeGrammars
 {
@@ -15,8 +16,7 @@ namespace ContextFreeGrammars
 
         public ProductionRule[] GetRulesFor(ISymbol symbol)
         {
-            // tu randomizacja
-            return null;
+            return this.ruleList.Where(rule => rule.GetFrom().Equals(symbol)).ToArray();
         }
     }
 }

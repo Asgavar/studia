@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ContextFreeGrammars
@@ -7,10 +8,24 @@ namespace ContextFreeGrammars
         private List<ITerm> innerTerms;
 
 
+        public Term()
+        {
+            this.innerTerms = new List<ITerm>();
+        }
+
+
+        public Term(ISymbol symbol)
+        {
+            this.innerTerms = new List<ITerm>();
+            this.innerTerms.Add(symbol);
+        }
+        
+
         public bool ReplaceSymbol(ProductionRule rule)
         {
             if (this.innerTerms.Contains(rule.GetFrom()))
             {
+                Console.WriteLine("jest");
                 for (var x = 0; x < this.innerTerms.Count; x++)
                 {
                     if (this.innerTerms[x].Equals(rule.GetFrom()))
@@ -45,6 +60,17 @@ namespace ContextFreeGrammars
             foreach (var term in this.innerTerms)
             {
                 ret.AddRange(term.GetReplaceableSymbols());
+            }
+            return ret;
+        }
+
+
+        public override string ToString()
+        {
+            string ret = "";
+            foreach (var term in this.innerTerms)
+            {
+                ret += term.ToString();
             }
             return ret;
         }

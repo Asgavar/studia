@@ -1,25 +1,27 @@
+using System;
+
 namespace ContextFreeGrammars
 {
     public class ABGrammar : IRandomGrammar
     {
         private TerminalSymbol[] terminals;
         private NonTerminalSymbol[] nonterminals;
-        private ISymbol startingSymbol;
+        private Term startingSymbol;
         private RandomProductionRuleList productionRules;
 
 
         public ABGrammar()
         {
-            this.terminals = {
-                new TerminalSymbol("a");
-                new TerminalSymbol("b");
+            this.terminals = new TerminalSymbol[]{
+                new TerminalSymbol("a"),
+                new TerminalSymbol("b")
             };
 
-            this.nonterminals = {
-                new NonTerminalSymbol("S");
+            this.nonterminals = new NonTerminalSymbol[]{
+                new NonTerminalSymbol("S")
             };
 
-            this.startingSymbol = new NonTerminalSymbol("S");
+            this.startingSymbol = new Term(new NonTerminalSymbol("S"));
 
             ISymbol[] aSb = {
                 new TerminalSymbol("a"),
@@ -42,7 +44,12 @@ namespace ContextFreeGrammars
 
         public string GetRandomWord()
         {
-            return "";
+            while (this.startingSymbol.GetReplaceableSymbols().Count != 0)
+            {
+                startingSymbol.ReplaceSymbol(this.productionRules.GetRulesFor(new NonTerminalSymbol("S"))[0]);
+                Console.WriteLine(startingSymbol.ToString());
+            }
+            return startingSymbol.ToString();
         }
     }
 }

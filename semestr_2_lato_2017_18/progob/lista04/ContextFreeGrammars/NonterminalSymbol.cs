@@ -32,9 +32,29 @@ namespace ContextFreeGrammars
         }
 
 
-        public List<ISymbol> GetReplaceableSymbols()
+        public List<ITerm> GetReplaceableSymbols()
         {
-            return new List<ISymbol>();
+            var ret = new List<ITerm>();
+            ret.Add(this);
+            return ret;
+        }
+
+
+        public override string ToString()
+        {
+            return this.repr;
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            return this.repr.Equals(obj.ToString());
+        }
+
+
+        public override int GetHashCode()
+        {
+            return 1234;
         }
     }
 }

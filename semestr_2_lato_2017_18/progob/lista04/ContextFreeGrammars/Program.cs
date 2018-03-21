@@ -6,7 +6,9 @@ namespace ContextFreeGrammars
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var grammar = new ABGrammar();
+            var word = grammar.GetRandomWord();
+            Console.WriteLine(word);
         }
     }
 }

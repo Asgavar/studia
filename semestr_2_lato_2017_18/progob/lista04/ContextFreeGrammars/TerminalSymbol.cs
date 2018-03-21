@@ -34,9 +34,25 @@ namespace ContextFreeGrammars
 
         public List<ITerm> GetReplaceableSymbols()
         {
-            var ret = new List<ITerm>();
-            ret.Add(this);
-            return ret;
+            return new List<ITerm>();
+        }
+
+
+        public override string ToString()
+        {
+            return this.repr;
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            return this.repr.Equals(obj.ToString());
+        }
+
+
+        public override int GetHashCode()
+        {
+            return 1234;
         }
     }
 }
