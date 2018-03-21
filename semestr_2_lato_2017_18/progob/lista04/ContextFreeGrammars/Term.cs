@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace ContextFreeGrammars
@@ -25,21 +24,21 @@ namespace ContextFreeGrammars
         {
             if (this.innerTerms.Contains(rule.GetFrom()))
             {
-                Console.WriteLine("jest");
                 for (var x = 0; x < this.innerTerms.Count; x++)
                 {
                     if (this.innerTerms[x].Equals(rule.GetFrom()))
                     {
                         this.innerTerms.RemoveAt(x);
-                        break;
+
+                        foreach (var newSymbol in rule.GetTo())
+                        {
+                            this.innerTerms.Insert(x, newSymbol);
+                            ++x;
+                        }
                     }
                 }
 
-                foreach (var newSymbol in rule.GetTo())
-                {
-                    this.innerTerms.Add(newSymbol);
-                }
-                
+                                
                 return true;
             } else {
                 foreach (var term in this.innerTerms)

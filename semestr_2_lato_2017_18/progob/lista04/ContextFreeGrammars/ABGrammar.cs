@@ -42,6 +42,7 @@ namespace ContextFreeGrammars
         }
 
 
+        // TODO: generator losowy
         public string GetRandomWord()
         {
             while (this.startingSymbol.GetReplaceableSymbols().Count != 0)

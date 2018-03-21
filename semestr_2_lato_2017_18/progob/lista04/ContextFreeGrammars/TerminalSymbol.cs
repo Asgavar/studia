@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
 
 namespace ContextFreeGrammars
 {
-    public class TerminalSymbol : ISymbol
+    public class TerminalSymbol : AbstractSymbol, ISymbol
     {
-        private string repr;
-
-
         public TerminalSymbol(string repr)
         {
             this.repr = repr;
@@ -26,33 +22,9 @@ namespace ContextFreeGrammars
         }
 
 
-        public bool ReplaceSymbol(ProductionRule rule)
-        {
-            throw new Exception();
-        }
-
-
         public List<ITerm> GetReplaceableSymbols()
         {
             return new List<ITerm>();
-        }
-
-
-        public override string ToString()
-        {
-            return this.repr;
-        }
-
-
-        public override bool Equals(object obj)
-        {
-            return this.repr.Equals(obj.ToString());
-        }
-
-
-        public override int GetHashCode()
-        {
-            return 1234;
         }
     }
 }
