@@ -1,0 +1,7 @@
+namespace ContextFreeGrammars
+{
+    public interface ITerm
+    {
+        ITerm GetReplaceableSymbols();
+    }
+}

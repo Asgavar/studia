@@ -1,0 +1,12 @@
+using System.Collections.Generic;
+
+namespace ContextFreeGrammars
+{
+    public interface IRandomGrammar
+    {
+        void setTerminals(List<ISymbol>);
+        void setNonTerminals(List<ISymbol>);
+        void setStartingSymbol(ISymbol);
+        void setProductionRules();
+    }
+}

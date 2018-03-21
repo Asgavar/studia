@@ -1,0 +1,22 @@
+using System.Collections.Generic;
+
+namespace ContextFreeGrammars
+{
+    public class Term
+    {
+        private List<string> innerTerms;
+
+
+        public void ReplaceSymbol(TerminalSymbol symb)
+        {
+            
+        }
+
+
+        public List<TerminalSymbol> GetReplaceableSymbols()
+        {
+            // TODO
+            return null;
+        }
+    }
+}
