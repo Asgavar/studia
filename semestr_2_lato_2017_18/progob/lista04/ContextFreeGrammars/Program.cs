@@ -6,9 +6,12 @@ namespace ContextFreeGrammars
     {
         static void Main(string[] args)
         {
-            var grammar = new ABGrammar();
-            var word = grammar.GetRandomWord();
-            Console.WriteLine(word);
+            for (short x = 0; x < 5; x++)
+            {
+                var grammar = new ABGrammar();
+                var word = grammar.GetRandomWord();
+                Console.WriteLine($"Wyraz {x}: {word}");
+            }
         }
     }
 }

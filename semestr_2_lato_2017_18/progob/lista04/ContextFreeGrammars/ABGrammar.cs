@@ -4,10 +4,13 @@ namespace ContextFreeGrammars
 {
     public class ABGrammar : IRandomGrammar
     {
+        private const int RULES_NUMBER = 2;
+        
         private TerminalSymbol[] terminals;
         private NonTerminalSymbol[] nonterminals;
         private Term startingSymbol;
         private RandomProductionRuleList productionRules;
+        private Random rng;
 
 
         public ABGrammar()
@@ -39,6 +42,7 @@ namespace ContextFreeGrammars
             };
 
             this.productionRules = new RandomProductionRuleList(ruleList);
+            this.rng = new Random();
         }
 
 
@@ -47,8 +51,11 @@ namespace ContextFreeGrammars
         {
             while (this.startingSymbol.GetReplaceableSymbols().Count != 0)
             {
-                startingSymbol.ReplaceSymbol(this.productionRules.GetRulesFor(new NonTerminalSymbol("S"))[0]);
-                Console.WriteLine(startingSymbol.ToString());
+                int randomIndex = this.rng.Next() % RULES_NUMBER;
+                startingSymbol.ReplaceSymbol(
+                    this.productionRules.GetRulesFor(new NonTerminalSymbol("S"))[randomIndex]
+                );
+                //Console.WriteLine(startingSymbol.ToString());
             }
             return startingSymbol.ToString();
         }
