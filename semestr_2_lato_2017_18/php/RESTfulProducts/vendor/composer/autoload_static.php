@@ -24,10 +24,18 @@ class ComposerStaticInit91c8bfa820cbc9b576415390aad92b3d
             'Symfony\\Component\\Debug\\' => 24,
             'Silex\\' => 6,
         ),
+        'R' => 
+        array (
+            'RESTfulProducts\\' => 16,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Container\\' => 14,
+        ),
+        'M' => 
+        array (
+            'Money\\' => 6,
         ),
     );
 
@@ -64,6 +72,10 @@ class ComposerStaticInit91c8bfa820cbc9b576415390aad92b3d
         array (
             0 => __DIR__ . '/..' . '/silex/silex/src/Silex',
         ),
+        'RESTfulProducts\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -71,6 +83,10 @@ class ComposerStaticInit91c8bfa820cbc9b576415390aad92b3d
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Money\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/moneyphp/money/src',
         ),
     );
 
@@ -80,6 +96,13 @@ class ComposerStaticInit91c8bfa820cbc9b576415390aad92b3d
             'Pimple' => 
             array (
                 0 => __DIR__ . '/..' . '/pimple/pimple/src',
+            ),
+        ),
+        'G' => 
+        array (
+            'Gaufrette' => 
+            array (
+                0 => __DIR__ . '/..' . '/knplabs/gaufrette/src',
             ),
         ),
     );
