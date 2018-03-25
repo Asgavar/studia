@@ -1,4 +1,4 @@
-package xyz.juraszek.srp;
+package xyz.juraszek.lsp;
 
 public class Square implements Rectangular {
 
