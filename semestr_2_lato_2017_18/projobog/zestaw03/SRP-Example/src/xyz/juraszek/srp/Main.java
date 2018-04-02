@@ -15,5 +15,7 @@ public class Main {
         oldPrinter.getData();
         oldPrinter.formatDocument();
         oldPrinter.printReport();
+
+        new ReportComposer(dataProvider).printReport();
     }
 }
