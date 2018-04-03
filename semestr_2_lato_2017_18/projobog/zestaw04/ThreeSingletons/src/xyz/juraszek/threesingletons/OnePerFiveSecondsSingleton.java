@@ -15,10 +15,10 @@ public class OnePerFiveSecondsSingleton {
 
     Calendar currentTime = Calendar.getInstance();
 
-    long secondsOfCreationTime = lastCreationHappenedAt.get(Calendar.SECOND);
-    long secondsOfCurrentTime = currentTime.get(Calendar.SECOND);
+    long creationTimeSeconds = lastCreationHappenedAt.getTime().getTime() / 1_000;
+    long currentTimeSeconds = currentTime.getTime().getTime() / 1_000;
 
-    if (secondsOfCurrentTime - secondsOfCreationTime > 5) {
+    if (currentTimeSeconds - creationTimeSeconds > 5) {
       instance = new OnePerFiveSecondsSingleton();
     }
 
