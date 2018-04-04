@@ -115,10 +115,10 @@
   (define (run-axiom c)
     (displayln (list 'checking 'axiom c))
     (and (member c (cnf-clauses form))
-         (clause-lits c)))
+         (clause-lits c)))  ; FIXME
   (define (run-res x cpos cneg)
     (displayln (list 'checking 'resolution 'of x 'for cpos 'and cneg))
-    (and (findf (lambda (l) (and (literal-pol l)
+    (and (findf (lambda (l) (and (literal-pol l) ; FIXME to chyba nie predykat?
                                  (eq? x (literal-var l))))
                 cpos)
          (findf (lambda (l) (and (not (literal-pol l))
@@ -203,15 +203,69 @@
   (if (null? xs) ys
       (rev-append (cdr xs) (cons (car xs) ys))))
 
-;; TODO: miejsce na uzupełnienie własnych funkcji pomocniczych
+(define (var-present? v xs)
+  (cond [(null? xs) false]
+        [(var=? v (car xs)) true]
+        [else (var-present? v xs)]))
 
+(define (var-present-in-both? v xs ys)
+  (and (var-present? v xs)
+       (var-present? v ys)))
+
+;; zwraca listę zmiennych pozbawioną wszystkich wystąpień zmiennej v
+(define (var-cut-from v xs)
+  (filter (lambda (x) (not (var=? v x)))
+          xs))
+
+(define (ensure-it-is-not-the-end c)
+  (if (clause-false? c)
+      (raise "Formuła jest sprzeczna")
+      c))
+
+
+;; zwraca zmienną, która występuje zarówno w xs jak i w ys, lub, jeśli takiej zmiennej
+;; nie ma: false
+(define (repeated-var xs ys)
+  (cond [(null? xs) false]
+        [(var-present-in-both? (car xs) xs ys) (car xs)]
+        [else (repeated-var (cdr xs) ys)]))
+
+;; zwraca odpowiedź na pytanie: "czy istnieje zmienna, która jest w obydwu listach
+;; zmiennych klauzuli c?"
 (define (clause-trivial? c)
-  ;; TODO: zaimplementuj!
-  false)
+  (not (repeated-var (res-clause-neg c) (res-clause-pos c))))
 
 (define (resolve c1 c2)
-  ;; TODO: zaimplementuj!
-  (error "Not implemented!"))
+  ;; zaczynamy od pobrania odpowiednich elementów klauzul c1 i c2
+  (let* ([c1-pos-vars (res-clause-pos c1)]
+         [c1-neg-vars (res-clause-neg c1)]
+         [c2-pos-vars (res-clause-pos c2)]
+         [c2-neg-vars (res-clause-neg c2)]
+         [c1-proof (res-clause-proof c1)]
+         [c2-proof (res-clause-proof c2)]
+         ;; sprawdzamy, czy istnieje zmienna zanegowana w jednej i niezanegowana
+         ;; w drugiej klauzuli (albo odwrotnie)
+         [pos-in-c1-neg-in-c2 (repeated-var c1-pos-vars c2-neg-vars)]
+         [neg-in-c1-pos-in-c2 (repeated-var c1-neg-vars c2-pos-vars)])
+    ;; jeśli istnieje, przystępujemy do tworzenia nowej klauzuli (rezolwenty c1 i c2)
+    (if (or pos-in-c1-neg-in-c2 neg-in-c1-pos-in-c2)
+        (let* ([newborn-proof
+                (cond [pos-in-c1-neg-in-c2 (proof-res pos-in-c1-neg-in-c2
+                                                      c1-proof c2-proof)]
+                      [neg-in-c1-pos-in-c2 (proof-res neg-in-c1-pos-in-c2
+                                                      c2-proof c1-proof)])]
+               [var-which-repeated
+                (cond [pos-in-c1-neg-in-c2 pos-in-c1-neg-in-c2]
+                      [neg-in-c1-pos-in-c2 neg-in-c1-pos-in-c2])]
+               [c1-pos-stripped (var-cut-from var-which-repeated c1-pos-vars)]
+               [c1-neg-stripped (var-cut-from var-which-repeated c1-neg-vars)]
+               [c2-pos-stripped (var-cut-from var-which-repeated c2-pos-vars)]
+               [c2-neg-stripped (var-cut-from var-which-repeated c2-neg-vars)]
+               [newborn-pos (merge-vars c1-pos-stripped c2-pos-stripped)]
+               [newborn-neg (merge-vars c1-neg-stripped c2-neg-stripped)])
+          (ensure-it-is-not-the-end (res-clause newborn-pos newborn-neg newborn-proof)))
+        ;; jeśli nie, zwracamy fałsz
+        false)))
 
 (define (resolve-single-prove s-clause checked pending)
   ;; TODO: zaimplementuj!
@@ -239,7 +293,7 @@
   (cond
    ;; jeśli lista pending jest pusta, to checked jest zamknięta na rezolucję czyli spełnialna
    [(null? pending) (generate-valuation (sort-clauses checked))]
-   ;; jeśli klauzula ma jeden literał, to możemy traktować łatwo i efektywnie ją przetworzyć
+   ;; jeśli klauzula ma jeden literał, to możemy łatwo i efektywnie ją przetworzyć
    [(= 1 (res-clause-size (car pending)))
     (resolve-single-prove (car pending) checked (cdr pending))]
    ;; w przeciwnym wypadku wykonujemy rezolucję z wszystkimi klauzulami już sprawdzonymi, a
