@@ -1,2 +1,2 @@
-*/uml linguist-generated=true
-*/vendor linguist-generated=true
+**/uml/** linguist-vendored
+**/vendor/** linguist-vendored
