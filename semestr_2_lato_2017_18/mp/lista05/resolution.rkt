@@ -206,7 +206,7 @@
 (define (var-present? v xs)
   (cond [(null? xs) false]
         [(var=? v (car xs)) true]
-        [else (var-present? v xs)]))
+        [else (var-present? v (cdr xs))]))
 
 (define (var-present-in-both? v xs ys)
   (and (var-present? v xs)
@@ -363,4 +363,16 @@
         (valuate-partial pf-val form)
         (check-proof pf-val form))))
 
-;;; TODO: poniżej wpisz swoje testy
+;; testy
+
+(define test-clause-1
+  (res-clause (list 'a 'b) (list 'c) (proof-axiom (clause (literal true 'a)
+                                                          (literal true 'b)
+                                                          (literal false 'c)))))
+
+(define test-clause-2
+  (res-clause (list 'c) (list 'd 'e) (proof-axiom (clause (literal true 'c)
+                                                          (literal false 'd)
+                                                          (literal false 'e)))))
+
+(resolve test-clause-1 test-clause-2)
