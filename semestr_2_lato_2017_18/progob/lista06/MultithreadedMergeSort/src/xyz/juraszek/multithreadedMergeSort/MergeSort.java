@@ -12,9 +12,9 @@ public class MergeSort implements Runnable {
     this.rightBoundary = rightBoundary;
   }
 
-  private void merge(int leftStart, int rightStart) {
+  private void merge(int leftStart, int rightStart, int subArrayLength) {
 
-    int subArrayLength = (rightStart - leftStart + 1) / 2;
+//    int subArrayLength = (rightStart - leftStart + 1) / 2;
     int[] temporaryArray = new int[subArrayLength * 2];
     int initialLeftStart = leftStart;
     int indexInTempArray = 0;
@@ -51,7 +51,10 @@ public class MergeSort implements Runnable {
     }
 
     /* na koniec wklejamy tablicę tymczasową na miejsce tych dwóch podtablic */
-    System.arraycopy(temporaryArray, 0, this.arrayToSort, initialLeftStart, temporaryArray.length);
+//    System.arraycopy(temporaryArray, 0, this.arrayToSort, initialLeftStart, temporaryArray.length);
+    for (int x = 0; x < temporaryArray.length; x++) {
+      this.arrayToSort[initialLeftStart+x] = temporaryArray[x];
+    }
   }
 
   @Override
@@ -88,7 +91,7 @@ public class MergeSort implements Runnable {
     }
 
     /* i złączamy je w całość */
-    this.merge(this.leftBoundary, arrayMiddle);
+    this.merge(this.leftBoundary, arrayMiddle, arrayMiddle-this.leftBoundary);
   }
 
 }

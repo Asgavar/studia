@@ -7,7 +7,7 @@ public class Main {
   public static void main(String[] args) throws InterruptedException {
 
     int[] arrayToSort = {
-        9, 42, -33, 18, 27, 31
+        3, 4, -7, 999, 42
     };
 
     System.out.println("Przed posortowaniem: " + Arrays.toString(arrayToSort));
