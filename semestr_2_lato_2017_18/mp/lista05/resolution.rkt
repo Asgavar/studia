@@ -115,10 +115,10 @@
   (define (run-axiom c)
     (displayln (list 'checking 'axiom c))
     (and (member c (cnf-clauses form))
-         (clause-lits c)))  ; FIXME
+         (clause-lits c)))
   (define (run-res x cpos cneg)
     (displayln (list 'checking 'resolution 'of x 'for cpos 'and cneg))
-    (and (findf (lambda (l) (and (literal-pol l) ; FIXME to chyba nie predykat?
+    (and (findf (lambda (l) (and (literal-pol l)
                                  (eq? x (literal-var l))))
                 cpos)
          (findf (lambda (l) (and (not (literal-pol l))
@@ -203,11 +203,13 @@
   (if (null? xs) ys
       (rev-append (cdr xs) (cons (car xs) ys))))
 
+;; czy zmienna występuje w liście xs?
 (define (var-present? v xs)
   (cond [(null? xs) false]
         [(var=? v (car xs)) true]
         [else (var-present? v (cdr xs))]))
 
+;; czy zmienna występuje w obydwu listach, xs i ys?
 (define (var-present-in-both? v xs ys)
   (and (var-present? v xs)
        (var-present? v ys)))
@@ -222,7 +224,6 @@
       (raise "Formuła jest sprzeczna")
       c))
 
-
 ;; zwraca zmienną, która występuje zarówno w xs jak i w ys, lub, jeśli takiej zmiennej
 ;; nie ma: false
 (define (repeated-var xs ys)
@@ -233,7 +234,7 @@
 ;; zwraca odpowiedź na pytanie: "czy istnieje zmienna, która jest w obydwu listach
 ;; zmiennych klauzuli c?"
 (define (clause-trivial? c)
-  (not (repeated-var (res-clause-neg c) (res-clause-pos c))))
+  (not (not (repeated-var (res-clause-neg c) (res-clause-pos c)))))
 
 (define (resolve c1 c2)
   ;; zaczynamy od pobrania odpowiednich elementów klauzul c1 i c2
@@ -369,10 +370,44 @@
   (res-clause (list 'a 'b) (list 'c) (proof-axiom (clause (literal true 'a)
                                                           (literal true 'b)
                                                           (literal false 'c)))))
-
 (define test-clause-2
   (res-clause (list 'c) (list 'd 'e) (proof-axiom (clause (literal true 'c)
                                                           (literal false 'd)
                                                           (literal false 'e)))))
+(define test-clause-3
+  (res-clause (list 'x 'y) (list 'x) (proof-axiom (clause (literal true 'x)
+                                                          (literal true 'y)
+                                                          (literal false 'x)))))
 
-(resolve test-clause-1 test-clause-2)
+(resolve test-clause-1 test-clause-2)  ; rezolwenta powinna być pozbawiona zm. c
+(resolve test-clause-1 test-clause-3)  ; nie rezolwują się
+(resolve test-clause-2 test-clause-3)  ; również się nie rezolwują
+
+(clause-trivial? test-clause-3)  ; jest trywialna, zmienna x się powtarza
+(clause-trivial? test-clause-2)  ; nie jest trywialna
+(clause-trivial? test-clause-1)  ; również nie jest trywialna
+
+(axiom-clause (res-clause-proof test-clause-1))
+(axiom-clause (res-clause-proof test-clause-2))
+(axiom-clause (res-clause-proof test-clause-3))
+
+;; sprawdźmy, czy przykładowy wygenerowany dowód jest poprawny syntaktycznie.
+;; check-proof określi go jako #f, jednak słusznie, ponieważ nie dowodzi on
+;; sprzeczności tej formuły (w ogóle nie jest ona sprzeczna)
+(let* ([c1-c2-resolvent (resolve test-clause-1 test-clause-2)]
+       [proof-of-this-resolvent (res-clause-proof c1-c2-resolvent)]
+       [clause-1-in-cnf (axiom-clause (res-clause-proof test-clause-1))]
+       [clause-2-in-cnf (axiom-clause (res-clause-proof test-clause-2))]
+       [initial-cnf (cnf clause-1-in-cnf clause-2-in-cnf)])
+  (displayln (proof? proof-of-this-resolvent))
+  (check-proof proof-of-this-resolvent initial-cnf))
+
+;; sprawdźmy teraz co się stanie, jeśli zaserwujemy programowi formułę sprzeczną
+(define test-contr-1
+  (res-clause (list 'p) '() (proof-axiom (clause (literal true 'p)))))
+(define test-contr-2
+  (res-clause '() (list 'p) (proof-axiom (clause (literal false 'p)))))
+
+(resolve test-contr-1 test-contr-2)
+
+;; TODO sortowanie list zmiennych w rezolwencie
