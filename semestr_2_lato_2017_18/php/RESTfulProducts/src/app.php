@@ -6,6 +6,7 @@ use RESTfulProducts\Controllers\ProductsDeleteController;
 use RESTfulProducts\Controllers\ProductsGetCollectionController;
 use RESTfulProducts\Controllers\ProductsGetIndividualController;
 use RESTfulProducts\Controllers\ProductsPostController;
+use RESTfulProducts\Controllers\ProductsPutController;
 use RESTfulProducts\Serializers\JSONProductSerializer;
 use RESTfulProducts\StorageManagers\FSProductStorageManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,9 +47,15 @@ $app->post("/products", function(Request $request) use($jsonSerializer, $fsStora
     });
 
 
-//$app->put("/products/{id}", function($id) use($jsonSerializer, $fsStorageManager) {
-//        $controller = new Pro
-//});
+$app->put("/products/{id}", function($id, Request $request) use($jsonSerializer, $fsStorageManager) {
+        $controller = new ProductsPutController(
+            $jsonSerializer,
+            $fsStorageManager,
+            $id,
+            $request->getContent()
+        );
+        return new Response($controller(), 200);
+});
 
 
 $app->delete("/products/{id}", function ($id) use($jsonSerializer, $fsStorageManager) {

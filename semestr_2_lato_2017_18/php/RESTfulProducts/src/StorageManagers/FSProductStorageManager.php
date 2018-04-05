@@ -4,6 +4,7 @@ namespace RESTfulProducts\StorageManagers;
 
 use Gaufrette\Filesystem;
 use Gaufrette\Adapter\Local as LocalAdapter;
+use Money\Money;
 
 use RESTfulProducts\DataSpecifications\ProductCollection;
 use RESTfulProducts\DataSpecifications\ProductIndividual;
@@ -64,7 +65,7 @@ class FSProductStorageManager implements ProductStorageManagerInterface
             return new ProductIndividual(
                 $productId,
                 "Produkt został usunięty lub nigdy nie istniał",
-                null
+                Money::PLN(0)
             );
         }
     }

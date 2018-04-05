@@ -21,14 +21,13 @@ class ProductsPutController
     public function __construct(ProductSerializerInterface $serializer,
                                 ProductStorageManagerInterface $storageManager,
                                 int $oldId,
-                                string $newName,
-                                int $newPrice)
+                                string $newName)
     {
         $this->serializer = $serializer;
         $this->storageManager = $storageManager;
         $this->oldId = $oldId;
         $this->newName = $newName;
-        $this->newPrice = $newPrice;
+        $this->newPrice = Money::PLN(rand());
     }
 
 
