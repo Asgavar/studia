@@ -5,24 +5,26 @@ public class ExampleConsumer implements Runnable {
   private ThreadSafeBuffer buffer;
   private int readSoFar;
   private int whenToStop;
+  private final Object lock;
 
-  public ExampleConsumer(ThreadSafeBuffer buffer, int whenToStop) {
+  public ExampleConsumer(ThreadSafeBuffer buffer, int whenToStop, Object lock) {
     this.buffer = buffer;
     this.readSoFar = 0;
     this.whenToStop = whenToStop;
+    this.lock = lock;
   }
 
   private void readFromBuffer() throws Exception {
 
-    synchronized (this) {
+    synchronized (this.lock) {
       while (this.buffer.isEmpty()) {
-        this.wait();
+        this.lock.wait();
       }
 
       System.out.println("Pobrałem " + this.buffer.get());
+      this.lock.notifyAll();
       ++this.readSoFar;
 
-      this.notifyAll();
     }
   }
 
