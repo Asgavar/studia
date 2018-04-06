@@ -219,11 +219,6 @@
   (filter (lambda (x) (not (var=? v x)))
           xs))
 
-(define (ensure-it-is-not-the-end c)
-  (if (clause-false? c)
-      (raise "Formuła jest sprzeczna")
-      c))
-
 ;; zwraca zmienną, która występuje zarówno w xs jak i w ys, lub, jeśli takiej zmiennej
 ;; nie ma: false
 (define (repeated-var xs ys)
@@ -264,7 +259,7 @@
                [c2-neg-stripped (var-cut-from var-which-repeated c2-neg-vars)]
                [newborn-pos (merge-vars c1-pos-stripped c2-pos-stripped)]
                [newborn-neg (merge-vars c1-neg-stripped c2-neg-stripped)])
-          (ensure-it-is-not-the-end (res-clause newborn-pos newborn-neg newborn-proof)))
+          (res-clause newborn-pos newborn-neg newborn-proof))
         ;; jeśli nie, zwracamy fałsz
         false)))
 
@@ -324,9 +319,59 @@
     (subsume-add-prove checked (insert (car new) pending) (cdr new))
     ]))
 
+;; zwraca dowolną (prawie, pierwszą) zmienną zawartą w klauzuli c.
+;; wiemy, że c nie może być pusta, więc możemy sobie pozwolić na takiego ifa
+(define (take-any-var c)
+  (if (null? (res-clause-pos c))
+      (car (res-clause-neg c))
+      (car (res-clause-pos c))))
+
+;; procedura przeznaczona dla klauzul jednoelementowych, w obecnej implementacji
+;; działa tak samo jak procedura dla klauzul wieloelementowych
+(define (take-only-var c)
+  (take-any-var c))
+
+;; jeśli c ma jeden element który jest literałem v zwracamy fałsz,
+;; w przeciwnym wypadku - c z wyciętym wystąpieniem v
+(define (ease-one v c)
+  ;; wewnętrzna procedura zajmująca się jedną stroną (pos/neg) klazuli
+  (define (inner todo acc t-or-f)
+    (if (null? todo)
+        acc
+        (if (and (var=? (car todo) (literal-var v))
+                 (eq? (literal-pol v) t-or-f))
+            (inner (cdr todo) acc t-or-f) ; "wyrzucenie" zmiennej
+            (inner (cdr todo) (append (literal t-or-f (car todo)) acc) t-or-f))))
+  (let ([pos-result (inner (res-clause-pos c) '() true)]
+        [neg-result (inner (res-clause-neg c) '() false)])
+    (if (and (not (null? pos-result))
+             (not (null? neg-result)))
+        (res-clause pos-result neg-result (res-clause-proof c))
+        false)))
+
+(define (ease-all-in-list v cs)
+  (define (inner todo acc)
+    (if (null? todo)
+        acc
+        (inner (cdr todo) (append (ease-one v (car todo)) acc))))
+  (inner cs '()))
+
 (define (generate-valuation resolved)
-  ;; TODO: zaimplementuj!
-  ;; Ta implementacja mówi tylko że formuła może być spełniona, ale nie mówi jak. Uzupełnij ją!
+  (displayln (list 'GENERACJA 'WALUACJI resolved))
+  (displayln (length resolved))
+  ;; opierając się na tym, że klauzule w resolved są posortowane względem ilości
+  ;; posiadanych w sobie zmiennych:
+  ;; 1) dopóki wśród klauzul do przetworzenia są klauzule jednoelementowe pobieramy
+  ;; ich wartość
+  ;; 2) w momencie dojścia do klauzul o rozmiarze większym niż 1 pobieramy
+  ;; dowolną z ich zmiennych
+  ;; 3) po każdej operacji dodania nowej zwartościowanej zmiennej do finalnego zbioru
+  ;; wykonujemy "ułatwienie" wszystkich już przetworzonych zmiennych
+  ;(define (inner-gen to-process acc)
+   ; (cond [(null? to-process) acc]
+    ;      [(= 1 (res-clause-size) (car to-process))
+     ;      (let* ([var-to-add (take-only-var (car to-process))]
+      ;            []
   'sat)
 
 ;; procedura przetwarzające wejściowy CNF na wewnętrzną reprezentację klauzul
@@ -364,7 +409,7 @@
         (valuate-partial pf-val form)
         (check-proof pf-val form))))
 
-;; testy
+;; testy i eksperymenty
 
 (define test-clause-1
   (res-clause (list 'a 'b) (list 'c) (proof-axiom (clause (literal true 'a)
@@ -384,7 +429,7 @@
 (resolve test-clause-2 test-clause-3)  ; również się nie rezolwują
 
 (clause-trivial? test-clause-3)  ; jest trywialna, zmienna x się powtarza
-(clause-trivial? test-clause-2)  ; nie jest trywialna
+(clause-trivial? test-clause-2)  ; nie jest trywialna w
 (clause-trivial? test-clause-1)  ; również nie jest trywialna
 
 (axiom-clause (res-clause-proof test-clause-1))
@@ -410,4 +455,17 @@
 
 (resolve test-contr-1 test-contr-2)
 
-;; TODO sortowanie list zmiennych w rezolwencie
+(define test-pending-sat
+  (list test-clause-1 test-clause-2 test-clause-3))
+
+(define test-pending-contradictory
+  (list test-contr-1 test-contr-2))
+
+(displayln "resolve-prove dla formuły sprzecznej:")
+(resolve-prove '() test-pending-contradictory)
+(displayln "resolve-prove dla formuły spełnialnej:")
+(resolve-prove '() test-pending-sat)
+
+(displayln (ease-one (literal #t 'p) test-contr-1)) ; fałsz, bo to jedyna zmienna w test-contr-1
+(displayln (ease-one (literal #t 'p) test-contr-2)) ; formuła bez zmian
+(displayln (ease-one (literal #t 'x) test-clause-3)) ; formuła pozbawiona pozytywnego wystąpienia x
