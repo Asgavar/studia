@@ -302,8 +302,30 @@
            (sorted-rs    (sort-clauses resolvents)))
       (subsume-add-prove (cons next-clause checked) rest-pending sorted-rs))]))
 
+;; czy klauzula c1 jest łatwiejsza od klauzuli c2?
+;; tzn czy wszystkie zmienne zawarte w c2 są też w c1 z taką samą wartością logiczną?
+(define (clause-easier-than? c1 c2)
+  (let* ([c1-pos (res-clause-pos c1)]
+         [c1-neg (res-clause-neg c1)]
+         [c2-pos (res-clause-pos c2)]
+         [c2-neg (res-clause-neg c2)])
+    (and (andmap (lambda (x) (var-present? x c1-pos))
+                 c2-pos)
+         (andmap (lambda (x) (var-present? x c1-neg))
+                 c2-neg))))
+
+;; jeśli c jest łatwiejsza od którejś z klauzul w cs, zwraca 'throw-it-out.
+;; zwraca listę klauzul z cs, które są łatwiejsze od c, być może jest to pusta lista
+(define (easier-than-list c cs)
+  (define (inner todo acc)
+    (cond [(null? todo) acc]
+          [clause-easier-than? c (car cs) 'throw-it-out]
+          [(clause-easier-than? (car cs) c) (inner (cdr todo) (insert (car cs) acc))]
+          [else (inner (cdr todo) acc)]))
+  (inner cs '()))
+
 ;; procedura upraszczająca stan obliczeń biorąc pod uwagę świeżo wygenerowane klauzule i
-;; kontynuująca obliczenia. Do uzupełnienia.
+;; kontynuująca obliczenia.
 (define (subsume-add-prove checked pending new)
   (cond
    [(null? new)                 (resolve-prove checked pending)]
@@ -313,11 +335,19 @@
    ;; jeśli klauzula jest trywialna to nie ma potrzeby jej przetwarzać
    [(clause-trivial? (car new)) (subsume-add-prove checked pending (cdr new))]
    [else
-    ;; TODO: zaimplementuj!
-    ;; Poniższa implementacja nie sprawdza czy nowa klauzula nie jest lepsza (bądź gorsza) od już
-    ;; rozpatrzonych; popraw to!
-    (subsume-add-prove checked (insert (car new) pending) (cdr new))
-    ]))
+    (let ([checked-easier (easier-than-list (car new) checked)]
+          [pending-easier (easier-than-list (car new) pending)])
+      (cond [(or (eq? checked-easier 'throw-it-out)
+                 (eq? pending-easier 'throw-it-out))
+             (subsume-add-prove checked pending (cdr new))] ; wyrzucamy klauzulę
+            [else (let ([filtered-checked (filter (λ (c) (not (member c checked-easier)))
+                                                  checked)]
+                        [filtered-pending (filter (λ (c) (not (member c pending-easier)))
+                                                  pending)])
+                    (subsume-add-prove filtered-checked
+                                       (insert (car new) filtered-pending)
+                                       (cdr new)))]))]))
+    ;(subsume-add-prove checked (insert (car new) pending) (cdr new))]))
 
 ;; zwraca dowolną (prawie, pierwszą) zmienną zawartą w klauzuli c.
 ;; wiemy, że c nie może być pusta, więc możemy sobie pozwolić na takiego ifa
@@ -331,7 +361,7 @@
 (define (take-only-var c)
   (take-any-var c))
 
-;; jeśli literał v występuje w klauzuli c w takim samym wartościowaniu,
+;; jeśli literał v występuje w klauzuli c jako zmienna o takim samym wartościowaniu,
 ;; jest ona kandydatem do usunięcia - procedura ta zwróci wtedy symbol
 ;; 'already-satisfied.
 ;; w przeciwnym wypadku - niezmienioną klauzulę c
@@ -351,34 +381,18 @@
         'already-satisfied
         c)))
 
-;; upraktycznia symbol 'already-satisfied
-(define (clause->list-or-null c)
-  (if (eq? c 'already-satisfied)
-      '()
-      (list c)))
-
 ;; zwraca listę klauzul oczyszczoną względem literału v
 (define (ease-all-in-list v cs)
   (define (inner todo acc)
     (if (null? todo)
         acc
-        (inner (cdr todo) (append (clause->list-or-null (ease-one v (car todo))) acc))))
+        (let ([next-easiered (ease-one v (car todo))])
+          (if (eq? next-easiered 'already-satisfied)
+              (inner (cdr todo) acc)
+              (inner (cdr todo) (insert next-easiered acc))))))
   (inner cs '()))
 
 (define (generate-valuation resolved)
-  ;(displayln (list 'GENERACJA 'WALUACJI resolved))
-  ;(displayln (length resolved))
-  ; TODO sortowanie po kazdym ulatwieniu
-  (newline)
-  ;(displayln 'ULATWIENIA)
-  ;(displayln (ease-all-in-list (literal #t 'x) resolved))
-  (newline)
-  ;(displayln 'ULATWIENIA-2)
-  ;(displayln (ease-all-in-list (literal #t 'a) resolved))
-  (newline)
-  (displayln 'WSZYSTKIE)
-  (displayln resolved)
-  (newline)
   ;; opierając się na tym, że klauzule w resolved są posortowane względem ilości
   ;; posiadanych w sobie zmiennych:
   ;; 1) dopóki wśród klauzul do przetworzenia są klauzule jednoelementowe pobieramy
@@ -388,15 +402,14 @@
   ;; 3) po każdej operacji dodania nowej zwartościowanej zmiennej do finalnego zbioru
   ;; wykonujemy "ułatwienie" wszystkich już przetworzonych klauzul
   (define (inner-gen to-process acc)
-    (displayln (list 'COTUDO to-process))
     (if (null? to-process)
         acc
         (let* ([first-clause (car to-process)]
                [new-var (cond [(= (res-clause-size first-clause) 1)
                                (take-only-var first-clause)]
                               [else (take-any-var first-clause)])]
-               [easiered-to-process (ease-all-in-list new-var (cdr to-process))]) ; bez aktualnie przetwarzanej
-          (inner-gen easiered-to-process (cons new-var acc)))))
+               [easiered-to-process (ease-all-in-list new-var (cdr to-process))])
+          (inner-gen (sort-clauses easiered-to-process) (cons new-var acc)))))
   (list 'sat (inner-gen resolved '())))
 
 ;; procedura przetwarzające wejściowy CNF na wewnętrzną reprezentację klauzul
@@ -470,7 +483,7 @@
        [clause-2-in-cnf (axiom-clause (res-clause-proof test-clause-2))]
        [initial-cnf (cnf clause-1-in-cnf clause-2-in-cnf)])
   (displayln (proof? proof-of-this-resolvent))
-  (check-proof proof-of-this-resolvent initial-cnf))
+  (displayln (check-proof proof-of-this-resolvent initial-cnf)))
 
 ;; sprawdźmy teraz co się stanie, jeśli zaserwujemy programowi formułę sprzeczną
 (define test-contr-1
@@ -490,6 +503,10 @@
 (resolve-prove '() test-pending-contradictory)
 (displayln "resolve-prove dla formuły spełnialnej:")
 (resolve-prove '() test-pending-sat)
+
+;; to powinna być klauzula trywialna
+(clause-trivial? (clause (literal #t 'h)
+                         (literal #f 'h)))
 
 ;; to jedyna zmienna w test-contr-1, więc powinno się poddać ją "ułatwieniu""
 (displayln (ease-one (literal #t 'p) test-contr-1))
