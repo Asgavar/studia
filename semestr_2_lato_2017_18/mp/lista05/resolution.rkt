@@ -323,42 +323,62 @@
 ;; wiemy, że c nie może być pusta, więc możemy sobie pozwolić na takiego ifa
 (define (take-any-var c)
   (if (null? (res-clause-pos c))
-      (car (res-clause-neg c))
-      (car (res-clause-pos c))))
+      (literal #f (car (res-clause-neg c)))
+      (literal #t (car (res-clause-pos c)))))
 
 ;; procedura przeznaczona dla klauzul jednoelementowych, w obecnej implementacji
 ;; działa tak samo jak procedura dla klauzul wieloelementowych
 (define (take-only-var c)
   (take-any-var c))
 
-;; jeśli c ma jeden element który jest literałem v zwracamy fałsz,
-;; w przeciwnym wypadku - c z wyciętym wystąpieniem v
+;; jeśli literał v występuje w klauzuli c w takim samym wartościowaniu,
+;; jest ona kandydatem do usunięcia - procedura ta zwróci wtedy symbol
+;; 'already-satisfied.
+;; w przeciwnym wypadku - niezmienioną klauzulę c
 (define (ease-one v c)
   ;; wewnętrzna procedura zajmująca się jedną stroną (pos/neg) klazuli
-  (define (inner todo acc t-or-f)
+  (define (inner todo t-or-f)
     (if (null? todo)
-        acc
+        'does-not-contain
         (if (and (var=? (car todo) (literal-var v))
                  (eq? (literal-pol v) t-or-f))
-            (inner (cdr todo) acc t-or-f) ; "wyrzucenie" zmiennej
-            (inner (cdr todo) (append (literal t-or-f (car todo)) acc) t-or-f))))
-  (let ([pos-result (inner (res-clause-pos c) '() true)]
-        [neg-result (inner (res-clause-neg c) '() false)])
-    (if (and (not (null? pos-result))
-             (not (null? neg-result)))
-        (res-clause pos-result neg-result (res-clause-proof c))
-        false)))
+            'does-contain
+            (inner (cdr todo) t-or-f))))
+  (let ([pos-result (inner (res-clause-pos c) true)]
+        [neg-result (inner (res-clause-neg c) false)])
+    (if (or (eq? pos-result 'does-contain)
+            (eq? pos-result 'does-contain))
+        'already-satisfied
+        c)))
 
+;; upraktycznia symbol 'already-satisfied
+(define (clause->list-or-null c)
+  (if (eq? c 'already-satisfied)
+      '()
+      (list c)))
+
+;; zwraca listę klauzul oczyszczoną względem literału v
 (define (ease-all-in-list v cs)
   (define (inner todo acc)
     (if (null? todo)
         acc
-        (inner (cdr todo) (append (ease-one v (car todo)) acc))))
+        (inner (cdr todo) (append (clause->list-or-null (ease-one v (car todo))) acc))))
   (inner cs '()))
 
 (define (generate-valuation resolved)
-  (displayln (list 'GENERACJA 'WALUACJI resolved))
-  (displayln (length resolved))
+  ;(displayln (list 'GENERACJA 'WALUACJI resolved))
+  ;(displayln (length resolved))
+  ; TODO sortowanie po kazdym ulatwieniu
+  (newline)
+  ;(displayln 'ULATWIENIA)
+  ;(displayln (ease-all-in-list (literal #t 'x) resolved))
+  (newline)
+  ;(displayln 'ULATWIENIA-2)
+  ;(displayln (ease-all-in-list (literal #t 'a) resolved))
+  (newline)
+  (displayln 'WSZYSTKIE)
+  (displayln resolved)
+  (newline)
   ;; opierając się na tym, że klauzule w resolved są posortowane względem ilości
   ;; posiadanych w sobie zmiennych:
   ;; 1) dopóki wśród klauzul do przetworzenia są klauzule jednoelementowe pobieramy
@@ -366,13 +386,18 @@
   ;; 2) w momencie dojścia do klauzul o rozmiarze większym niż 1 pobieramy
   ;; dowolną z ich zmiennych
   ;; 3) po każdej operacji dodania nowej zwartościowanej zmiennej do finalnego zbioru
-  ;; wykonujemy "ułatwienie" wszystkich już przetworzonych zmiennych
-  ;(define (inner-gen to-process acc)
-   ; (cond [(null? to-process) acc]
-    ;      [(= 1 (res-clause-size) (car to-process))
-     ;      (let* ([var-to-add (take-only-var (car to-process))]
-      ;            []
-  'sat)
+  ;; wykonujemy "ułatwienie" wszystkich już przetworzonych klauzul
+  (define (inner-gen to-process acc)
+    (displayln (list 'COTUDO to-process))
+    (if (null? to-process)
+        acc
+        (let* ([first-clause (car to-process)]
+               [new-var (cond [(= (res-clause-size first-clause) 1)
+                               (take-only-var first-clause)]
+                              [else (take-any-var first-clause)])]
+               [easiered-to-process (ease-all-in-list new-var (cdr to-process))]) ; bez aktualnie przetwarzanej
+          (inner-gen easiered-to-process (cons new-var acc)))))
+  (list 'sat (inner-gen resolved '())))
 
 ;; procedura przetwarzające wejściowy CNF na wewnętrzną reprezentację klauzul
 (define (form->clauses f)
@@ -466,6 +491,14 @@
 (displayln "resolve-prove dla formuły spełnialnej:")
 (resolve-prove '() test-pending-sat)
 
-(displayln (ease-one (literal #t 'p) test-contr-1)) ; fałsz, bo to jedyna zmienna w test-contr-1
+;; to jedyna zmienna w test-contr-1, więc powinno się poddać ją "ułatwieniu""
+(displayln (ease-one (literal #t 'p) test-contr-1))
 (displayln (ease-one (literal #t 'p) test-contr-2)) ; formuła bez zmian
-(displayln (ease-one (literal #t 'x) test-clause-3)) ; formuła pozbawiona pozytywnego wystąpienia x
+(displayln (ease-one (literal #t 'x) test-clause-3)) ; tak jak test-contr-1
+
+;; wynikiem jest klauzula <c lub -d lub -e>, ponieważ zmienna a
+;; występuje zarówno w test-clause-1 jak i rezolwencie obydwu tych klauzul
+(displayln (ease-all-in-list (literal #t 'a)
+                             (list test-clause-1
+                                   test-clause-2
+                                   (resolve test-clause-1 test-clause-2))))
