@@ -264,8 +264,10 @@
         false)))
 
 (define (resolve-single-prove s-clause checked pending)
-  ;; TODO: zaimplementuj!
-  ;; Poniższa implementacja działa w ten sam sposób co dla większych klauzul — łatwo ją poprawić!
+  ;(displayln (map (lambda (c) (if (resolve c s-clause)
+  ;                     (resolve c s-clause)
+  ;                     (c)))
+  ;     checked))
   (let* ((resolvents   (filter-map (lambda (c) (resolve c s-clause))
                                      checked))
          (sorted-rs    (sort resolvents < #:key res-clause-size)))
@@ -340,13 +342,9 @@
       (cond [(or (eq? checked-easier 'throw-it-out)
                  (eq? pending-easier 'throw-it-out))
              (subsume-add-prove checked pending (cdr new))] ; wyrzucamy klauzulę
-            [else (let ([filtered-checked (filter (λ (c) (not (member c checked-easier)))
-                                                  checked)]
-                        [filtered-pending (filter (λ (c) (not (member c pending-easier)))
-                                                  pending)])
-                    (subsume-add-prove filtered-checked
-                                       (insert (car new) filtered-pending)
-                                       (cdr new)))]))]))
+            [else (subsume-add-prove checked-easier
+                                     (insert (car new) pending-easier)
+                                     (cdr new))]))]))
     ;(subsume-add-prove checked (insert (car new) pending) (cdr new))]))
 
 ;; zwraca dowolną (prawie, pierwszą) zmienną zawartą w klauzuli c.
@@ -366,31 +364,18 @@
 ;; 'already-satisfied.
 ;; w przeciwnym wypadku - niezmienioną klauzulę c
 (define (ease-one v c)
-  ;; wewnętrzna procedura zajmująca się jedną stroną (pos/neg) klazuli
-  (define (inner todo t-or-f)
-    (if (null? todo)
-        'does-not-contain
-        (if (and (var=? (car todo) (literal-var v))
-                 (eq? (literal-pol v) t-or-f))
-            'does-contain
-            (inner (cdr todo) t-or-f))))
-  (let ([pos-result (inner (res-clause-pos c) true)]
-        [neg-result (inner (res-clause-neg c) false)])
-    (if (or (eq? pos-result 'does-contain)
-            (eq? pos-result 'does-contain))
+  (let ([side-to-search (if (literal-pol v)
+                            (res-clause-pos c)
+                            (res-clause-neg c))])
+    (if (var-present? (literal-var v) side-to-search)
         'already-satisfied
         c)))
 
 ;; zwraca listę klauzul oczyszczoną względem literału v
 (define (ease-all-in-list v cs)
-  (define (inner todo acc)
-    (if (null? todo)
-        acc
-        (let ([next-easiered (ease-one v (car todo))])
-          (if (eq? next-easiered 'already-satisfied)
-              (inner (cdr todo) acc)
-              (inner (cdr todo) (insert next-easiered acc))))))
-  (inner cs '()))
+  (sort-clauses (filter (lambda (c) (not (eq? c 'already-satisfied)))
+          (map (lambda (cc) (ease-one v cc))
+               cs))))
 
 (define (generate-valuation resolved)
   ;; opierając się na tym, że klauzule w resolved są posortowane względem ilości
