@@ -93,13 +93,34 @@
   (and (arith/let/holes? t)
        (= (num-of-holes t) 1)))
 
+(define (cons-distinct new-el els)
+  (if (andmap (lambda (e) (not (eq? new-el e)))
+              els)
+      (cons new-el els)
+      els))
+
+(define (append-distinct xs ys)
+  (if (null? xs)
+      ys
+      (cons-distinct (car xs) (append-distinct (cdr xs) ys))))
+
 (define (hole-context e)
-  ;; TODO: zaimplementuj!
-  (error "Not implemented!")
-  )
+  (cond [(hole? e)  '()]
+        [(var? e)   '()]
+        [(const? e) '()]
+        [(let? e) (cond [(hole? (let-def-expr (let-def e))) '()]
+                        [(arith/let/hole-expr? (let-expr e)) (cons-distinct (let-def-var (let-def e))
+                                                                            (hole-context (let-expr e)))]
+                        [else '()])]
+        [(binop? e) (append-distinct (hole-context (binop-left e))
+                                     (hole-context (binop-right e)))]))
+
+(define (test-unit expr desired-output)
+  (equal? (eval expr) desired-output))
 
 (define (test)
-  ;; TODO: zaimplementuj!
-  (error "Not implemented!")
-  )
+  (test-unit '(hole-context (let p 7) hole) '(p)))
+
+(test)
+
 
