@@ -115,12 +115,15 @@
         [(binop? e) (append-distinct (hole-context (binop-left e))
                                      (hole-context (binop-right e)))]))
 
-(define (test-unit expr desired-output)
-  (equal? (eval expr) desired-output))
-
 (define (test)
-  (test-unit '(hole-context (let p 7) hole) '(p)))
+  (and (equal? (hole-context '(let (p 7) hole)) '(p))
+       (equal? (hole-context '(+ 1 hole)) '())
+       (equal? (hole-context '(/ (let (invisible 42) (+ 1 invisible)) hole)) '())
+       (equal? (sort (hole-context '(let (a_one 1)
+                                      (let (b_two 2)
+                                        (let (c_three 3)
+                                          (let (b_two 22) hole))))) symbol<?) '(a_one b_two c_three))
+       (equal? (hole-context '(let (x hole)
+                                (let (y 7) (+ x y)))) '())))
 
-(test)
-
-
+;(test)
