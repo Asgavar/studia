@@ -2,11 +2,11 @@ package xyz.juraszek.swingobjecteditor.models;
 
 import java.io.Serializable;
 
-public class Book implements PhysicalReadableThingModel, Serializable {
+public class Book implements Model, Serializable {
 
-  protected String title;
-  protected String author;
-  protected String isbnNumber;
+  private String title;
+  private String author;
+  private String isbnNumber;
 
   public Book(String title, String isbnNumber, String author) {
     this.title = title;
@@ -21,5 +21,17 @@ public class Book implements PhysicalReadableThingModel, Serializable {
   @Override
   public String getRepresentation() {
     return this.toString();
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public String getIsbnNumber() {
+    return isbnNumber;
   }
 }
