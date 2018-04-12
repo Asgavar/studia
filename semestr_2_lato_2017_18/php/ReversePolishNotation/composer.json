@@ -1,0 +1,17 @@
+{
+    "name": "asgavar/reverse-polish-notation",
+    "authors": [
+        {
+            "name": "Artur Juraszek",
+            "email": "artur@juraszek.xyz"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^7.1"
+    },
+    "autoload": {
+      "psr-4": {
+          "ReversePolishNotation\\": "src/"
+      }
+    }
+}
