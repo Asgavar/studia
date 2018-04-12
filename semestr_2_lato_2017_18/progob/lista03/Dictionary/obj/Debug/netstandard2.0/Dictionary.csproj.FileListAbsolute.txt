@@ -1,8 +1,0 @@
-/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Dictionary/obj/Debug/netstandard2.0/Dictionary.csproj.CoreCompileInputs.cache
-/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Dictionary/obj/Debug/netstandard2.0/Dictionary.AssemblyInfoInputs.cache
-/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Dictionary/obj/Debug/netstandard2.0/Dictionary.AssemblyInfo.cs
-/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Dictionary/bin/Debug/netstandard2.0/Dictionary.deps.json
-/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Dictionary/bin/Debug/netstandard2.0/Dictionary.dll
-/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Dictionary/bin/Debug/netstandard2.0/Dictionary.pdb
-/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Dictionary/obj/Debug/netstandard2.0/Dictionary.dll
-/home/asgavar/studia/semestr_2_lato_2017_18/progob/lista03/Dictionary/obj/Debug/netstandard2.0/Dictionary.pdb
