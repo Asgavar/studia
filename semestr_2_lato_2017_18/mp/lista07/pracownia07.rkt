@@ -103,6 +103,25 @@
         [(eq? x (caar env)) (cadar env)]
         [else (find-in-env x (cdr env))]))
 
+;; lifted-atom to dwa elementy: lista let-defów oraz wyrażenie arytmetyczne
+(define (lifted-atom? la)
+  (and (list? la)
+       (= (length la) 2)
+       (andmap let-def? (first la))
+       (arith-expr? (second la))))
+
+(define (lifted-atom-cons defs aexpr)
+  (list defs aexpr))
+
+(define (lifted-atom-let-defs la)
+  (first la))
+
+(define (lifted-atom-arith-expr la)
+  (second la))
+
+(define (lifted-atom-list? las)
+  (andmap (lifted-atom? las)))
+
 ;; the let-lift procedure
 
 (define (let-lift e)
@@ -165,8 +184,7 @@
   (displayln "rename-with-counter")
   (displayln (rename-with-counter '(let (p 1) (+ p
                                                  (- 2 p)
-                                                 (let (q p) (/ q 2 (let (q 77) q))))) 0)
-             )
-  )
+                                                 (let (q p) (/ q 2 (let (q 77) q))))) 0))
+  (displayln (lifted-atom? '(((x 1) (a 3) (b 14)) (+ x a b)))))
 
 (run-tests)
