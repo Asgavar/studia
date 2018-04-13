@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use ReversePolishNotation\DataStructures\Stack;
-use ReversePolishNotation\Exceptions\EmptyStackException;
+//use ReversePolishNotation\Exceptions\EmptyStackException;
 
 class StackTest extends TestCase
 {
@@ -41,7 +41,7 @@ class StackTest extends TestCase
     }
 
     /**
-     * @expectedException EmptyStackException
+     * @expectedException \ReversePolishNotation\Exceptions\EmptyStackException
      */
     public function testPoppingFromEmptyStackThrowsException()
     {
