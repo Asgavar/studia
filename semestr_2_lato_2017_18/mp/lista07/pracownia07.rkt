@@ -103,31 +103,71 @@
         [(eq? x (caar env)) (cadar env)]
         [else (find-in-env x (cdr env))]))
 
-;; lifted-atom to dwa elementy: lista let-defów oraz wyrażenie arytmetyczne
-(define (lifted-atom? la)
-  (and (list? la)
-       (= (length la) 2)
-       (andmap let-def? (first la))
-       (arith-expr? (second la))))
+;; lifted-inter to dwa elementy: lista let-defów oraz wyrażenie arytmetyczne
+(define (lifted-inter? li)
+  (and (list? li)
+       (= (length li) 2)
+       (andmap let-def? (first li))
+       (arith-expr? (second li))))
 
-(define (lifted-atom-cons defs aexpr)
+(define (lifted-inter-cons defs aexpr)
   (list defs aexpr))
 
-(define (lifted-atom-let-defs la)
-  (first la))
+(define (lifted-inter-let-defs li)
+  (first li))
 
-(define (lifted-atom-arith-expr la)
-  (second la))
+(define (lifted-inter-arith-expr li)
+  (second li))
 
-(define (lifted-atom-list? las)
-  (andmap (lifted-atom? las)))
+(define (lifted-inter-list? lis)
+  (andmap (lifted-inter? lis)))
+
+(define (lifted-inter-list-merge lis operator)
+  (displayln "EEE")
+  (displayln (map (lambda (li) (lifted-inter-let-defs li))
+                  lis))
+  (lifted-inter-cons (append (map (lambda (li) (lifted-inter-let-defs li))
+                                  lis))
+                     (cons operator
+                           (append (map (lambda (li) (lifted-inter-arith-expr li))
+                                        lis)))))
+
 
 ;; the let-lift procedure
 
 (define (let-lift e)
-  ;; TODO: Zaimplementuj!
-  (error "nie zaimplementowano!")
-  )
+  (cond [(let? e) (let* ([e-def (let-def e)]
+                         [e-def-var (let-def-var e-def)]
+                         [e-def-expr (let-def-expr e-def)]
+                         [e-expr (let-expr e)])
+                    (cond [(and (arith-expr? e-def-expr)  ; trywialny let
+                                (arith-expr? e-expr))
+                           (lifted-inter-cons (list e-def)
+                                              e-expr)]
+                          [(and (not (arith-expr? e-def-expr))
+                                (arith-expr? e-expr))  ; mniej trywialny let
+                           (let ([nested-inter (let-lift e-def-expr)])
+                             (lifted-inter-cons (append (lifted-inter-let-defs nested-inter)
+                                                        (list (let-def-cons e-def-var
+                                                                            (lifted-inter-arith-expr nested-inter))))
+                                                e-expr))]
+                          [(and (arith-expr? e-def-expr)
+                                (not (arith-expr? e-expr)))
+                           (let ([nested-inter (let-lift e-expr)])
+                             (lifted-inter-cons (append (list e-def)
+                                                        (lifted-inter-let-defs nested-inter))
+                                                (lifted-inter-arith-expr nested-inter)))]
+                          [else (let ([def-expr-inter (let-lift e-def-expr)]
+                                      [expr-inter (let-lift e-expr)])
+                                  (lifted-inter-cons (append (lifted-inter-let-defs def-expr-inter)
+                                                             (list (let-def-cons e-def-var
+                                                                                 (lifted-inter-arith-expr def-expr-inter)))
+                                                             (lifted-inter-let-defs expr-inter))
+                                                     (lifted-inter-arith-expr expr-inter)))]))]
+        [(var? e) (lifted-inter-cons '() e)]
+        [(const? e) (lifted-inter-cons '() e)]))
+
+
 
 ;; generacja nowych nazw dla zmiennych
 ;;
@@ -162,11 +202,12 @@
         [(let? expr) (let* ([expr-def (let-def expr)]
                             [expr-def-var (let-def-var expr-def)]
                             [expr-def-expr (let-def-expr expr-def)])
-                       ; jeśli nie doszło do kolizji, po prostu podmieniamy dalej
                        (if (not (eq? expr-def-var from))
+                           ; jeśli nie doszło do kolizji, po prostu podmieniamy dalej
                            (let-cons (let-def-cons expr-def-var
                                                    (rename-all-occurences from to expr-def-expr))
                                      (rename-all-occurences from to (let-expr expr)))
+                           ; jeśli doszło, ograniczamy się do wyrażenia w let-defie
                            (let-cons (let-def-cons expr-def-var
                                                    (rename-all-occurences from to expr-def-expr))
                                      (let-expr expr))))]))
@@ -185,6 +226,18 @@
   (displayln (rename-with-counter '(let (p 1) (+ p
                                                  (- 2 p)
                                                  (let (q p) (/ q 2 (let (q 77) q))))) 0))
-  (displayln (lifted-atom? '(((x 1) (a 3) (b 14)) (+ x a b)))))
+  (displayln (lifted-inter? '(((x 1) (a 3) (b 14)) (+ x a b))))
+  (displayln "let-lift-with-inter")
+  ;(displayln (let-lift '(let (x (- 2 (let (z 3) z))) (+ x 2) )))
+  (displayln (let-lift '(let (x (let (y 2) y)) x)))
+  (displayln (let-lift '(let (x (let (y 2) y)) (let (f x) f))))
+  (displayln "lifted-inter-list-merge")
+  (displayln (lifted-inter-list-merge '(
+                                        ( ((x 1) (y 2))
+                                          (+ x y) )
+                                        ( ((a 33) (b 74))
+                                          a ) )
+                                      '*
+  )))
 
 (run-tests)
