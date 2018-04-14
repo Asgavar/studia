@@ -123,51 +123,57 @@
   (andmap (lifted-inter? lis)))
 
 (define (lifted-inter-list-merge lis operator)
-  (displayln "EEE")
-  (displayln (map (lambda (li) (lifted-inter-let-defs li))
-                  lis))
-  (lifted-inter-cons (append (map (lambda (li) (lifted-inter-let-defs li))
-                                  lis))
+  (lifted-inter-cons (foldr append ' () (map (lambda (li) (lifted-inter-let-defs li))
+                                             lis))
                      (cons operator
                            (append (map (lambda (li) (lifted-inter-arith-expr li))
                                         lis)))))
 
-
-;; the let-lift procedure
+(define (lifted-inter->let-lifted-expr li)
+  (let ([li-defs (lifted-inter-let-defs li)]
+        [li-expr (lifted-inter-arith-expr li)])
+    (if (null? li-defs)
+        li-expr
+        (let-cons (first li-defs)
+                  (lifted-inter->let-lifted-expr (lifted-inter-cons (cdr li-defs)
+                                                                    li-expr))))))
 
 (define (let-lift e)
+  (lifted-inter->let-lifted-expr (let-lift-with-inter (gen-new-varnames e))))
+
+(define (let-lift-with-inter e)
   (cond [(let? e) (let* ([e-def (let-def e)]
                          [e-def-var (let-def-var e-def)]
                          [e-def-expr (let-def-expr e-def)]
                          [e-expr (let-expr e)])
-                    (cond [(and (arith-expr? e-def-expr)  ; trywialny let
+                    (cond [(and (arith-expr? e-def-expr)
                                 (arith-expr? e-expr))
                            (lifted-inter-cons (list e-def)
                                               e-expr)]
                           [(and (not (arith-expr? e-def-expr))
-                                (arith-expr? e-expr))  ; mniej trywialny let
-                           (let ([nested-inter (let-lift e-def-expr)])
+                                (arith-expr? e-expr))
+                           (let ([nested-inter (let-lift-with-inter e-def-expr)])
                              (lifted-inter-cons (append (lifted-inter-let-defs nested-inter)
                                                         (list (let-def-cons e-def-var
                                                                             (lifted-inter-arith-expr nested-inter))))
                                                 e-expr))]
                           [(and (arith-expr? e-def-expr)
                                 (not (arith-expr? e-expr)))
-                           (let ([nested-inter (let-lift e-expr)])
+                           (let ([nested-inter (let-lift-with-inter e-expr)])
                              (lifted-inter-cons (append (list e-def)
                                                         (lifted-inter-let-defs nested-inter))
                                                 (lifted-inter-arith-expr nested-inter)))]
-                          [else (let ([def-expr-inter (let-lift e-def-expr)]
-                                      [expr-inter (let-lift e-expr)])
+                          [else (let ([def-expr-inter (let-lift-with-inter e-def-expr)]
+                                      [expr-inter (let-lift-with-inter e-expr)])
                                   (lifted-inter-cons (append (lifted-inter-let-defs def-expr-inter)
                                                              (list (let-def-cons e-def-var
                                                                                  (lifted-inter-arith-expr def-expr-inter)))
                                                              (lifted-inter-let-defs expr-inter))
                                                      (lifted-inter-arith-expr expr-inter)))]))]
         [(var? e) (lifted-inter-cons '() e)]
-        [(const? e) (lifted-inter-cons '() e)]))
-
-
+        [(const? e) (lifted-inter-cons '() e)]
+        [(op? e) (lifted-inter-list-merge (map let-lift-with-inter (op-args e))
+                                          (op-op e))]))
 
 ;; generacja nowych nazw dla zmiennych
 ;;
@@ -228,16 +234,29 @@
                                                  (let (q p) (/ q 2 (let (q 77) q))))) 0))
   (displayln (lifted-inter? '(((x 1) (a 3) (b 14)) (+ x a b))))
   (displayln "let-lift-with-inter")
-  ;(displayln (let-lift '(let (x (- 2 (let (z 3) z))) (+ x 2) )))
-  (displayln (let-lift '(let (x (let (y 2) y)) x)))
-  (displayln (let-lift '(let (x (let (y 2) y)) (let (f x) f))))
+  (displayln (let-lift-with-inter '(let (x (- 2 (let (z 3) z))) (+ x 2) )))
+  (displayln (let-lift-with-inter '(let (x (let (y 2) y)) x)))
+  (displayln (let-lift-with-inter '(let (x (let (y 2) y)) (let (f x) f))))
   (displayln "lifted-inter-list-merge")
   (displayln (lifted-inter-list-merge '(
                                         ( ((x 1) (y 2))
                                           (+ x y) )
                                         ( ((a 33) (b 74))
                                           a ) )
-                                      '*
-  )))
+                                      '*))
+  (displayln "let-lift")
+  (define test-case-1 '(let (x (- 2 (let (z 3) z))) (+ x 2)))
+  (define test-case-2 '(+ (let (x 42) (let (z (/ x 2)) (- 20 z))) (* 20 (let (f 11) f))))
+  (define test-case-3 '(- 10 (* (let (x 7) (+ x 2)) 2)))
+  (define test-case-4 '(let (x (let (y 2) y)) (let (f x) f)))
+  (define test-case-5 '(+ x (let (x (+ x 2)) (/ x 1))))
+  (displayln (let-lift test-case-1))
+  (displayln (let-lift test-case-2))
+  (displayln (let-lift test-case-3))
+  (displayln (let-lifted-expr? (let-lift test-case-1)))
+  (displayln (let-lifted-expr? (let-lift test-case-2)))
+  (displayln (let-lifted-expr? (let-lift test-case-3)))
+  (displayln (let-lifted-expr? (let-lift test-case-4)))
+  (displayln (let-lifted-expr? (let-lift test-case-5))))
 
-(run-tests)
+;(run-tests)
