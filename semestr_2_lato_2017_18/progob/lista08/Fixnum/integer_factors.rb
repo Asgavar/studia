@@ -1,4 +1,4 @@
-class Fixnum
+class Integer
   def factors
     fs = []
     1.upto(self) do |x|
