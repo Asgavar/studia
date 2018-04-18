@@ -31,7 +31,7 @@ class Ciphertext
 end
 
 
-$\ = '\n'
+$\ = "\n"
 
 a_key = {
   'a' => 'x',
