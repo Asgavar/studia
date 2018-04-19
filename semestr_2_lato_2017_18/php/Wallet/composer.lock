@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cef58a5388071cc0443d9f2d63319816",
+    "content-hash": "f8db59f3787e7d50f42b8d1f64b676d5",
     "packages": [
         {
             "name": "moneyphp/money",

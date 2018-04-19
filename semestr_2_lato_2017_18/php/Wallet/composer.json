@@ -1,12 +1,10 @@
 {
-    "name": "asgavar/wallet",
-    "require": {
-        "moneyphp/money": "^3.1"
-    },
-    "authors": [
-        {
-            "name": "Artur Juraszek",
-            "email": "artur@juraszek.xyz"
-        }
-    ]
+  "autoload": {
+    "psr-4": {
+      "Wallet\\": "src/"
+    }
+  },
+  "require": {
+    "moneyphp/money": "^3.1"
+  }
 }

@@ -1,4 +1,9 @@
-interface EventSuscriber
+<?php
+
+namespace Wallet\Interfaces;
+
+
+interface EventSubscriber
 {
-    public function notify();
+    public function notify(Event $event);
 }

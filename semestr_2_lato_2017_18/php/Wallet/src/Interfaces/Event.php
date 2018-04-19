@@ -1,4 +1,8 @@
-class Event
+<?php
+
+namespace Wallet\Interfaces;
+
+interface Event
 {
-    public 
+
 }

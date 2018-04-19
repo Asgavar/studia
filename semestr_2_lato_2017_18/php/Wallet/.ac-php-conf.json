@@ -7,7 +7,8 @@
     ],
     "php-path-list": [
         "./src",
-        "./vendor/moneyphp/money/src"
+        "./vendor/moneyphp/money/src",
+        "."
     ],
     "php-path-list-without-subdir": []
   }

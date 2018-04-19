@@ -1,0 +1,1 @@
+<?phpnamespace Wallet\Exceptions;class WalletAlreadyActiveException extends \Exception{}
