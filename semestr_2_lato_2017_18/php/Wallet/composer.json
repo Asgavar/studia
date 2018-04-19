@@ -1,0 +1,12 @@
+{
+    "name": "asgavar/wallet",
+    "require": {
+        "moneyphp/money": "^3.1"
+    },
+    "authors": [
+        {
+            "name": "Artur Juraszek",
+            "email": "artur@juraszek.xyz"
+        }
+    ]
+}
