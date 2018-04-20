@@ -19,7 +19,7 @@ for ($x = 0; $x < $transactions_count; $x++)
 {
     $amount = $argv[$TRANSACTION_OFFSET + $x];
     $wallet->deposit(
-        new Money((int)$amount, new Currency($currency_name))  // FIXME
+        new Money((int)$amount, new Currency($currency_name))
     );
 }
 

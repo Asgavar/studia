@@ -49,7 +49,7 @@ class WalletState
 
             case "Wallet\Events\MoneyWithdrawnEvent":
 
-                if (! $this->currentBalance->getAmount() > $event->getDifference()->getAmount())
+                if ($this->currentBalance->getAmount() < $event->getDifference()->getAmount())
                     throw new InsufficientFundsException();
 
                 $this->currentBalance = $this->currentBalance->subtract($event->getDifference());

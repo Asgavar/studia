@@ -53,34 +53,34 @@ class Wallet implements EventSubscriber
         if (is_null($this->state->getCurrentBalance()))
         {
             $currencySetEvent = new CurrencySetEvent($moneyToDeposit->getCurrency());
-            $this->aggregator->publish($currencySetEvent);
             $this->state->processEvent($currencySetEvent);
+            $this->aggregator->publish($currencySetEvent);
         }
 
         $depositEvent = new MoneyDepositedEvent($moneyToDeposit);
-        $this->aggregator->publish($depositEvent);
         $this->state->processEvent($depositEvent);
+        $this->aggregator->publish($depositEvent);
     }
 
     public function withdraw(Money $moneyToWithdraw): void
     {
         $withdrawEvent = new MoneyWithdrawnEvent($moneyToWithdraw);
-        $this->aggregator->publish($withdrawEvent);
         $this->state->processEvent($withdrawEvent);
+        $this->aggregator->publish($withdrawEvent);
     }
 
     public function deactivate(string $reason): void
     {
         $deactivateEvent = new WalletDeactivatedEvent();
-        $this->aggregator->publish($deactivateEvent);
         $this->state->processEvent($deactivateEvent);
+        $this->aggregator->publish($deactivateEvent);
     }
 
     public function activate(string $reason): void
     {
         $activateEvent = new WalletActivatedEvent();
-        $this->aggregator->publish($activateEvent);
         $this->state->processEvent($activateEvent);
+        $this->aggregator->publish($activateEvent);
     }
 
     public function getBalance(): Money
