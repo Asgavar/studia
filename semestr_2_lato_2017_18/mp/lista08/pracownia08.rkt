@@ -204,6 +204,40 @@
 (define (null?-cons e)
   (list 'null? e))
 
+;; list constructor which is kind of blind (lazy?), i.e.
+;; does not evaluate its arguments
+
+(define (list-cons? e)
+  (and (list? e)
+       (eq? (car e) 'list)
+       (> (length e) 1)))
+
+(define (list-cons e)
+  (apply list (cdr e)))
+
+;; list selectors
+
+(define (first? e)
+  (and (list? e)
+       (eq? (car e) 'first)))
+
+(define (second? e)
+  (and (list? e)
+       (eq? (car e) 'second)))
+
+(define (third? e)
+  (and (list? e)
+       (eq? (car e) 'third)))
+
+(define (first-eval e)
+  (first (second e)))
+
+(define (second-eval e)
+  (second (second e)))
+
+(define (third-eval e)
+  (third (second e)))
+
 ;; lambdas
 
 (define (lambda? t)
@@ -375,6 +409,10 @@
          (car (eval-env (car-expr e) env))]
         [(cdr? e)
          (cdr (eval-env (cdr-expr e) env))]
+        [(first? e) (first-eval e)]
+        [(second? e) (second-eval e)]
+        [(third? e) (third-eval e)]
+        [(list-cons? e) (list-cons e)]
         [(pair?? e)
          (bool->val (pair? (eval-env (pair?-expr e) env)))]
         [(null?? e)
