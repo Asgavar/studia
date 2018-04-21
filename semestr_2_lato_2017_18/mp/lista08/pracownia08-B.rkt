@@ -113,6 +113,12 @@
        (symbol? (first e))
        (expr? (second e))))
 
+(define (lazy-let-cons ll-def ll-expr)
+  (list 'lazy-let ll-def ll-expr))
+
+(define (lazy-let-def-cons lld-var lld-expr)
+  (list lld-var lld-expr))
+
 (define (lazy-let-expr e)
   (third e))
 
@@ -124,6 +130,68 @@
 
 (define (lazy-let-def-expr e)
   (second e))
+
+(define (lazy-let-eval e env)
+  (let* ([new-e (lazy-let-bind-vars e env)]
+         [e-def (lazy-let-def new-e)]
+         [e-expr (lazy-let-expr new-e)]
+         [e-def-var (lazy-let-def-var e-def)]
+         [e-def-expr (lazy-let-def-expr e-def)])
+    (eval-env (replace-var-with-expr e-def-var e-def-expr e-expr) env)))
+
+;; FIXME srodowisko: first i rest
+(define (lazy-let-bind-vars ll env)
+  (if (null? env)
+      ll
+      (let ([new-def-var (lazy-let-def-var (lazy-let-def ll))]
+            [new-def-expr (replace-var-with-expr (caar env)
+                                                 (cadar env)
+                                                 (lazy-let-def-expr (lazy-let-def ll)))])
+        (lazy-let-bind-vars (lazy-let-cons (lazy-let-def-cons new-def-var
+                                                              new-def-expr)
+                                           (lazy-let-expr ll))
+                            (cdr env)))))
+
+;; TODO
+;; FIXME redundancja
+(define (replace-var-with-expr var with-expr in-expr)
+  ;in-expr)
+  (cond [(and (var? in-expr)
+              (eq? var in-expr)) with-expr]
+        [(let? in-expr)
+         (let* ([e-def (let-def in-expr)]
+                [e-expr (let-expr in-expr)]
+                [e-def-var (let-def-var e-def)]
+                [e-def-expr (let-def-expr e-def)])
+           (if (eq? e-def-var var)
+               (let-cons (let-def-cons e-def-var
+                                       (replace-var-with-expr var
+                                                              with-expr
+                                                              e-def-expr))
+                         e-expr)
+               (let-cons (let-def-cons e-def-var
+                                       (replace-var-with-expr var
+                                                              with-expr
+                                                              e-def-expr))
+                         (replace-var-with-expr var with-expr e-expr))))]
+        [(lazy-let? in-expr)
+         (let* ([ll-def (lazy-let-def in-expr)]
+                [ll-expr (lazy-let-expr in-expr)]
+                [ll-def-var (lazy-let-def-var ll-def)]
+                [ll-def-expr (lazy-let-def-expr ll-def)])
+           (if (eq? ll-def-var var)
+               (lazy-let-cons (lazy-let-def-cons ll-def-var
+                                                 (replace-var-with-expr var
+                                                                        with-expr
+                                                                        ll-def-expr))
+                              ll-expr)
+               (lazy-let-cons (lazy-let-def-cons ll-def-var
+                                                 (replace-var-with-expr var
+                                                                        with-expr
+                                                                        ll-def-expr))
+                              (replace-var-with-expr var with-expr ll-expr))))]
+        [(op? in-expr) (map (λ (elem) (replace-var-with-expr var with-expr elem)) in-expr)]
+        [else in-expr]))
 
 ;; pairs
 
@@ -379,6 +447,7 @@
         [(let? e)
          (eval-env (let-expr e)
                    (env-for-let (let-def e) env))]
+        [(lazy-let? e) (lazy-let-eval e env)]
         [(my-null? e)
          null]
         [(cons? e)
@@ -458,3 +527,20 @@
 
 (define (eval e)
   (eval-env e empty-env))
+
+(define (run-tests)
+  (displayln
+   (= (eval '(let (y 7) (lazy-let (x (/ 1 y)) (+ 1 x)))) 8/7))
+  (displayln
+   (= (eval '(let (a 12) (lazy-let (a 13) a))) 13))
+  (displayln
+   (= (eval '(lazy-let (b (+ 32 1)) (let (c b) c))) 33))
+  (displayln
+   (= (eval '(lazy-let (x (/ 42 0)) (lazy-let (y x) 41))) 41))
+  (displayln
+   (= (eval '(lazy-let (x (/ 42 0))
+                       (lazy-let (y (+ 1 3))
+                                 (lazy-let (z (- 90 y))
+                                           (+ z 12))))) 98)))
+
+(run-tests)
