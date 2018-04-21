@@ -101,6 +101,30 @@
 (define (var-cons x)
   x)
 
+;; lazy lets
+
+(define (lazy-let? e)
+  (and (tagged-tuple? 'lazy-let 3 e)
+       (lazy-let-def? (second e))))
+
+(define (lazy-let-def? e)
+  (and (list? e)
+       (= (length e) 2)
+       (symbol? (first e))
+       (expr? (second e))))
+
+(define (lazy-let-expr e)
+  (third e))
+
+(define (lazy-let-def e)
+  (second e))
+
+(define (lazy-let-def-var e)
+  (first e))
+
+(define (lazy-let-def-expr e)
+  (second e))
+
 ;; pairs
 
 (define (cons? t)
