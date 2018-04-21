@@ -142,9 +142,11 @@
   (and (list? e)
        (eq? (car e) 'number?)))
 
-(define (number??-eval e)
-  (let ([expr-body (second e)])
-    (if (number? expr-body)
+(define (number??-eval e env)
+  (let* ([expr-body (second e)]
+         [actually-a-number (or (number? expr-body)
+                                (number? (find-in-env expr-body env)))])
+    (if actually-a-number
         'true
         'false)))
 
@@ -217,6 +219,11 @@
 
 ;; list selectors
 
+(define (var-or-list->list expr env)
+  (if (exists-in-env expr env)
+      (find-in-env expr env)
+      expr))
+
 (define (first? e)
   (and (list? e)
        (eq? (car e) 'first)))
@@ -229,14 +236,14 @@
   (and (list? e)
        (eq? (car e) 'third)))
 
-(define (first-eval e)
-  (first (second e)))
+(define (first-eval e env)
+  (first (var-or-list->list (second e) env)))
 
-(define (second-eval e)
-  (second (second e)))
+(define (second-eval e env)
+  (second (var-or-list->list (second e) env)))
 
-(define (third-eval e)
-  (third (second e)))
+(define (third-eval e env)
+  (third (var-or-list->list (second e) env)))
 
 ;; lambdas
 
@@ -341,6 +348,11 @@
         [(eq? x (caar env)) (cadar env)]
         [else (find-in-env x (cdr env))]))
 
+(define (exists-in-env x env)
+  (cond [(null? env) #f]
+        [(eq? (caar env) x) #t]
+        [else (exists-in-env x (cdr env))]))
+
 ;; closures
 
 (define (closure-cons xs expr env)
@@ -409,9 +421,9 @@
          (car (eval-env (car-expr e) env))]
         [(cdr? e)
          (cdr (eval-env (cdr-expr e) env))]
-        [(first? e) (first-eval e)]
-        [(second? e) (second-eval e)]
-        [(third? e) (third-eval e)]
+        [(first? e) (first-eval e env)]
+        [(second? e) (second-eval e env)]
+        [(third? e) (third-eval e env)]
         [(list-cons? e) (list-cons e)]
         [(pair?? e)
          (bool->val (pair? (eval-env (pair?-expr e) env)))]
@@ -432,12 +444,12 @@
                            (lambda-rec-vars e)
                            (lambda-rec-expr e)
                            env)]
-        [(number?? e) (number??-eval e)]
+        [(number?? e) (number??-eval e env)]
         [(app? e)
          (apply-closure
-           (eval-env (app-proc e) env)
-           (map (lambda (a) (eval-env a env))
-                (app-args e)))]))
+          (eval-env (app-proc e) env)
+          (map (lambda (a) (eval-env a env))
+               (app-args e)))]))
 
 (define (eval-cond-clauses cs env)
   (if (null? cs)
@@ -484,3 +496,13 @@
 
 (define (eval e)
   (eval-env e empty-env))
+
+(define (arith-evaluator-run expr)
+  (eval `((lambda-rec (arith-ev e)
+                      (if (number? e)
+                          e
+                          (+ (arith-ev (second e))
+                             (arith-ev (third e)))))
+                          ;(+ (arith-ev (second e))
+                          ;   (arith-ev (third e)))))
+          ,expr)))
