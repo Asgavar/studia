@@ -136,6 +136,17 @@
 (define (pair?-cons e)
   (list 'pair? e))
 
+;; number? predicate
+
+(define (number?? e)
+  (and (list? e)
+       (eq? (car e) 'number?)))
+
+(define (number??-eval e)
+  (let ([expr-body (second e)])
+    (if (number? expr-body)
+        'true
+        'false)))
 
 ;; if
 
@@ -383,6 +394,7 @@
                            (lambda-rec-vars e)
                            (lambda-rec-expr e)
                            env)]
+        [(number?? e) (number??-eval e)]
         [(app? e)
          (apply-closure
            (eval-env (app-proc e) env)
