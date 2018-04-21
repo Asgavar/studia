@@ -150,6 +150,24 @@
         'true
         'false)))
 
+;; symb-eq? predicate
+
+(define (symb-eq?? e)
+  (and (list? e)
+       (= 3 (length e))
+       (eq? (car e) 'symb-eq?)))
+
+(define (symb-eq??-eval e env)
+  (let ([left (if (exists-in-env (second e) env)
+                  (find-in-env (second e) env)
+                  (second e))]
+        [right (if (exists-in-env (third e) env)
+                   (find-in-env (third e) env)
+                   (third e))])
+    (if (equal? left right)
+        'true
+        'false)))
+
 ;; if
 
 (define (if? t)
@@ -206,8 +224,8 @@
 (define (null?-cons e)
   (list 'null? e))
 
-;; list constructor which is kind of blind (lazy?), i.e.
-;; does not evaluate its arguments
+;; list constructor which is kind of unusual, i.e. evaluates all
+;; of its nested arguments (when applicable) to lists at once
 
 (define (list-cons? e)
   (and (list? e)
@@ -215,7 +233,10 @@
        (> (length e) 1)))
 
 (define (list-cons e)
-  (apply list (cdr e)))
+  (apply list (map (λ (x) (if (list-cons? x)
+                                   (list-cons x)
+                                   x))
+                   (cdr e))))
 
 ;; list selectors
 
@@ -405,6 +426,7 @@
 (define (eval-env e env)
   (cond [(const? e)
          e]
+        [(list-cons? e) (list-cons e)]
         [(op? e)
          (apply (op->proc (op-op e))
                 (map (lambda (a) (eval-env a env))
@@ -424,7 +446,6 @@
         [(first? e) (first-eval e env)]
         [(second? e) (second-eval e env)]
         [(third? e) (third-eval e env)]
-        [(list-cons? e) (list-cons e)]
         [(pair?? e)
          (bool->val (pair? (eval-env (pair?-expr e) env)))]
         [(null?? e)
@@ -445,6 +466,7 @@
                            (lambda-rec-expr e)
                            env)]
         [(number?? e) (number??-eval e env)]
+        [(symb-eq?? e) (symb-eq??-eval e env)]
         [(app? e)
          (apply-closure
           (eval-env (app-proc e) env)
@@ -501,8 +523,45 @@
   (eval `((lambda-rec (arith-ev e)
                       (if (number? e)
                           e
-                          (+ (arith-ev (second e))
-                             (arith-ev (third e)))))
-                          ;(+ (arith-ev (second e))
-                          ;   (arith-ev (third e)))))
+                          (let (op (first e))
+                            (let (left (arith-ev (second e)))
+                              (let (right (arith-ev (third e)))
+                                (cond [(symb-eq? op +) (+ left right)]
+                                      [(symb-eq? op -) (- left right)]
+                                      [(symb-eq? op *) (* left right)]
+                                      [(symb-eq? op /) (/ left right)]))))))
           ,expr)))
+
+(define (run-tests)
+  (displayln
+   (= (arith-evaluator-run '(list + 1 2)) 3))
+  (displayln
+   (= (arith-evaluator-run '(list +
+                                  (list + 33 (list - 190 90))
+                                  (list / 1 1))) 134))
+  (displayln
+   (= (arith-evaluator-run '(list * (list - 5 6) 7)) -7))
+  (displayln
+   ; [1]
+   (= (arith-evaluator-run '(list -
+                                  (list * (list / 15 (list - 7 (list + 1 1))) 3)
+                                  (list + 2 (list + 1 1)))) 5))
+  (displayln
+   (= (arith-evaluator-run '(list / 1 (list / 1 (list / 1 (list / 1 1))))) 1))
+  (displayln
+   (= (arith-evaluator-run '(list * (list * 4 4) (list * 5 5)))
+      (arith-evaluator-run '(list * 16 25))))
+  (displayln
+   (= (arith-evaluator-run '(list /
+                              (list /
+                                    (list *
+                                          (list * 42 43)
+                                          43)
+                                    (list - 44 1))
+                              (list +
+                                    -43
+                                    (list +
+                                          2
+                                          (list * 2 42))))) 42)))
+
+;(run-tests)
