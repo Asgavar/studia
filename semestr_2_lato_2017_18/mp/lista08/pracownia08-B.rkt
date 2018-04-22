@@ -140,7 +140,9 @@
     (eval-env (replace-var-with-expr e-def-var e-def-expr e-expr) env)))
 
 (define (lazy-let-bind-vars ll env)
-  (if (null? env)
+  (if (or (null? env)
+          (closure-rec? (cadar env))
+          (closure? (cadar env)))
       ll
       (let ([new-def-var (lazy-let-def-var (lazy-let-def ll))]
             [new-def-expr (replace-var-with-expr (caar env)
@@ -156,7 +158,8 @@
   (define substitute
     (λ (e) (replace-var-with-expr var with-expr e)))
 
-  (cond [(and (var? in-expr)
+  (cond [(null? in-expr) null]
+        [(and (var? in-expr)
               (eq? var in-expr)) with-expr]
         [(let? in-expr)
          (let* ([e-def (let-def in-expr)]
@@ -567,6 +570,16 @@
   (displayln
    (= (eval '(lazy-let (m (+ 2 3)) ((lambda () (+ 5 m))))) 10))
   (displayln
-   (eq? (eval '(lazy-let (x (+ 7 8)) (> x 14))) 'true)))
+   (eq? (eval '(lazy-let (x (+ 7 8)) (> x 14))) 'true))
+  (displayln
+   (= (eval '((lambda-rec (fact n)
+                           (lazy-let [t 1]
+                                      (lazy-let [f (* n (fact (- n 1)))]
+                                                (if (= n 0) t f)))) 5)) 120))
+  (displayln
+   (= (eval '((lambda-rec (ack m n) (lazy-let [ret (cond [(= m 0) (+ n 1)]
+                                                         [(= n 0) (ack (- m 1) 1)]
+                                                         [true (ack (- m 1) (ack m (- n 1)))])]
+                                              ret)) 3 4)) 125)))
 
 ;(run-tests)
