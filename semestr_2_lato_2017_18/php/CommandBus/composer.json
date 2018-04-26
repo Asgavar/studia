@@ -1,0 +1,15 @@
+{
+    "name": "asgavar/command-bus",
+    "authors": [
+        {
+            "name": "Artur Juraszek",
+            "email": "artur@juraszek.xyz"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "CommandBus\\": "src/"
+        }
+    }
+}
