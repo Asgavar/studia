@@ -75,6 +75,13 @@
 (define (var? t)
   (symbol? t))
 
+(define (special-map-for-eval-arith initial-mem xs)
+  (if (null? xs)
+      null
+      (let ([new-value (eval-arith (car xs) initial-mem)]
+            [new-mem (eval-arith-mem-after (car xs) initial-mem)])
+        (cons new-value (special-map-for-eval-arith new-mem (cdr xs))))))
+
 (define (eval-arith e m)
   (cond [(true? e) true]
         [(false? e) false]
@@ -84,15 +91,21 @@
         [(op? e)
          (apply
           (op->proc (op-op e))
-          (map (lambda (x) (eval-arith x m))
-               (op-args e)))]
+          (special-map-for-eval-arith m (op-args e)))]
         [(const? e) e]))
 
-(define (eval-arith-mem-after e m)
-  (if (not (rand? e))
+(define (eval-arith-mem-after-op-args oas m)
+  (if (null? oas)
       m
-      (seed-update (rand-result-newseed ((rand (eval-arith (rand-upto e) m))
-                                         (seed-current m))) m)))
+      (eval-arith-mem-after-op-args (cdr oas)
+                                    (eval-arith-mem-after (car oas) m))))
+
+(define (eval-arith-mem-after e m)
+  (cond [(rand? e)
+         (seed-update (rand-result-newseed ((rand (eval-arith (rand-upto e) m))
+                                            (seed-current m))) m)]
+        [(op? e) (eval-arith-mem-after-op-args (op-args e) m)]
+        [else m]))
 
 ;; syntax of commands
 
@@ -258,3 +271,7 @@
 (check-not-equal? (run '(x := (rand 99999)))
                   (run '{(x := (rand 99999))
                          (x := (rand 99999))}))
+
+(check-equal? (get-mem 'please-work
+                       (run '(please-work := (= (rand 42) (rand 42)))))
+              false)
