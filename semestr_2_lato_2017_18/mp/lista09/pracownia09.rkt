@@ -245,4 +245,16 @@
 (check-equal? (probably-prime? 23 4) true)
 (check-equal? (probably-prime? 42 17) false)
 (check-equal? (probably-prime? 37 21) true)
-(check-equal? (probably-prime? 88 16) false)
+(check-equal? (probably-prime? 88 14) false)
+
+(check-equal? (run '(rrrrr := (rand 42)))
+              (run '(rrrrr := (rand (+ 41 1)))))
+
+(check-equal? (run '{(ab := (rand 4321))
+                     (cd := (rand ab))})
+              (run '{(ab := (rand 4321))
+                     (cd := (rand ab))}))
+
+(check-not-equal? (run '(x := (rand 99999)))
+                  (run '{(x := (rand 99999))
+                         (x := (rand 99999))}))
