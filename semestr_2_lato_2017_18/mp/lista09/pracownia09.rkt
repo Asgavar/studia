@@ -1,5 +1,7 @@
 #lang racket
 
+(require rackunit)
+
 ;; pomocnicza funkcja dla list tagowanych o określonej długości
 
 (define (tagged-tuple? tag len p)
@@ -211,3 +213,10 @@
     (not (get-mem
            'composite
            (eval fermat-test memory initial-seed)))))
+
+(check-equal? (probably-prime? 17 3) true)
+(check-equal? (probably-prime? 22 4) false)
+(check-equal? (probably-prime? 23 4) true)
+(check-equal? (probably-prime? 42 17) false)
+(check-equal? (probably-prime? 37 21) true)
+(check-equal? (probably-prime? 88 16) false)
