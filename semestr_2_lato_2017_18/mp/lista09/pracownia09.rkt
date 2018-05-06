@@ -177,17 +177,31 @@
 ;;
 
 (define fermat-test
-  '{} ;; TODO : ZAD A: Zdefiniuj reprezentację programu w jęzku
-      ;;        WHILE, który wykonuje test Fermata, zgodnie z
-      ;;        treścią zadania. Program powinien zakładać, że
-      ;;        uruchamiany jest w pamięci, w której zmiennej
-      ;;        n przypisana jest liczba, którą testujemy, a
-      ;;        zmiennej k przypisana jest liczba iteracji do
-      ;;        wykonania. Wynik powinien być zapisany w
-      ;;        zmiennej comopsite. Wartość true oznacza, że
-      ;;        liczba jest złożona, a wartość false, że jest
-      ;;        ona prawdopodobnie pierwsza.
-  )
+  '{(iteration-counter := 0)
+    (was-prime := true)
+
+    (while (< iteration-counter k)
+
+      {(randomly-chosen := 0)
+       (while (< randomly-chosen 2)  ; uninitialized variables evaluate to 0
+         (randomly-chosen := (rand (- n 2))))
+
+       (randchos-raised-to-n-minus-1 := randomly-chosen)
+       (power-counter := 1)
+       (while (< power-counter (- n 1))
+         {(randchos-raised-to-n-minus-1 := (* randchos-raised-to-n-minus-1
+                                              randomly-chosen))
+          (power-counter := (+ 1 power-counter))})
+
+       (if (not (= 1 (mod randchos-raised-to-n-minus-1 n)))
+           (was-prime := false)
+           (was-prime := was-prime))  ; nop
+       (iteration-counter := (+ 1 iteration-counter))})
+
+    (if was-prime
+        (composite := false)
+        (composite := true))})
+
 
 (define (probably-prime? n k) ; check if a number n is prime using
                               ; k iterations of Fermat's primality
