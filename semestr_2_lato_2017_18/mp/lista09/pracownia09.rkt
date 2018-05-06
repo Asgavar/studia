@@ -49,7 +49,7 @@
 
 (define (op? t)
   (and (list? t)
-       (member (car t) '(+ - * / = > >= < <= not and or mod rand))))
+       (member (car t) '(+ - * / = > >= < <= not and or mod))))
 
 (define (op-op e)
   (car e))
@@ -70,9 +70,7 @@
         [(eq? op 'not) not]
         [(eq? op 'and) (lambda x (andmap identity x))]
         [(eq? op 'or) (lambda x (ormap identity x))]
-        [(eq? op 'mod) modulo]
-        [(eq? op 'rand) (lambda (max) (min max 4))])) ; chosen by fair dice roll.
-                                                      ; guaranteed to be random.
+        [(eq? op 'mod) modulo]))
 
 (define (var? t)
   (symbol? t))
@@ -81,12 +79,20 @@
   (cond [(true? e) true]
         [(false? e) false]
         [(var? e) (get-mem e m)]
+        [(rand? e) (rand-result-result ((rand (eval-arith (rand-upto e) m))
+                                        (seed-current m)))]
         [(op? e)
          (apply
           (op->proc (op-op e))
           (map (lambda (x) (eval-arith x m))
                (op-args e)))]
         [(const? e) e]))
+
+(define (eval-arith-mem-after e m)
+  (if (not (rand? e))
+      m
+      (seed-update (rand-result-newseed ((rand (eval-arith (rand-upto e) m))
+                                         (seed-current m))) m)))
 
 ;; syntax of commands
 
@@ -122,6 +128,9 @@
 (define (while-expr t)
   (third t))
 
+(define (rand? e)
+  (tagged-tuple? 'rand 2 e))
+
 (define (block? t)
   (list? t))
 
@@ -146,6 +155,23 @@
     (let ([v (modulo (+ (* 1103515245 i) 12345) (expt 2 32))])
       (res (modulo v max) v))))
 
+(define (rand-upto rand-expr)
+  (second rand-expr))
+
+(define (rand-result-result rr)
+  (car rr))
+
+(define (rand-result-newseed rr)
+  (cdr rr))
+
+(define seed-magic-var '__seed__)
+
+(define (seed-current m)
+  (get-mem seed-magic-var m))
+
+(define (seed-update newseed m)
+  (set-mem seed-magic-var newseed m))
+
 ;; WHILE interpreter
 
 (define (old-eval e m)
@@ -153,25 +179,25 @@
          (set-mem
           (assign-var e)
           (eval-arith (assign-expr e) m)
-          m)]
+          (eval-arith-mem-after (assign-expr e) m))]
         [(if? e)
-         (if (eval-arith (if-cond e) m)
-             (old-eval (if-then e) m)
-             (old-eval (if-else e) m))]
+         (let ([newmem (eval-arith-mem-after (if-cond e) m)])
+           (if (eval-arith (if-cond e) m)
+               (old-eval (if-then e) newmem)
+               (old-eval (if-else e) newmem)))]
         [(while? e)
-         (if (eval-arith (while-cond e) m)
-             (old-eval e (old-eval (while-expr e) m))
-             m)]
+         (let ([newmem (eval-arith-mem-after (while-cond e) m)])
+           (if (eval-arith (while-cond e) m)
+               (old-eval e (old-eval (while-expr e) newmem))
+               newmem))]
         [(block? e)
          (if (null? e)
              m
              (old-eval (cdr e) (old-eval (car e) m)))]))
 
 (define (eval e m seed)
-  ;; TODO : ZAD B: Zaimplementuj procedurę eval tak, by
-  ;;        działała sensownie dla wyrażeń używających
-  ;;        konstrukcji "rand".
-  (old-eval e m))
+  (let ([mem-for-old-eval (set-mem '__seed__ seed m)])
+    (old-eval e mem-for-old-eval)))
 
 (define (run e)
   (eval e empty-mem initial-seed))
@@ -185,7 +211,7 @@
     (while (< iteration-counter k)
 
       {(randomly-chosen := 0)
-       (while (< randomly-chosen 2)  ; uninitialized variables evaluate to 0
+       (while (< randomly-chosen 2)
          (randomly-chosen := (rand (- n 2))))
 
        (randchos-raised-to-n-minus-1 := randomly-chosen)
