@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Zastosowany wzorzec to Strategia, wstrzykiwana przez konstruktor.
 
-class SuperCollection
+class Collection
   def initialize(initial_array=nil)
     unless initial_array.nil?
       @inner_array = initial_array
@@ -30,10 +30,6 @@ class SuperCollection
     @inner_array[i], @inner_array[j] = @inner_array[j], @inner_array[i]
   end
 
-  def between_inclusive(left, right)
-    SuperCollection.new(@inner_array[left, right])
-  end
-
   def min
     @inner_array.min
   end
@@ -48,7 +44,7 @@ class SuperCollection
 end
 
 
-class SuperSorting
+class Sorting
   def initialize(sorting_strategy)
     @sorting_strategy = sorting_strategy
   end
@@ -83,20 +79,21 @@ class SelectionSortStrategy
       unsorted.push(collection.get(index))
     end
     unsorted.length.times do |index|
-      after_index = unsorted[index, unsorted.length]
-      current_minimal = unsorted.min
-      collection.put(index, current_minimal)
+      current_minimum = unsorted.min
+      current_minimum_index = unsorted.index(current_minimum)
+      collection.put(index, current_minimum)
+      unsorted.delete_at(current_minimum_index)
     end
   end
 end
 
 
-bubblesort = SuperSorting.new(BubbleSortStrategy.new)
-selectionsort = SuperSorting.new(SelectionSortStrategy.new)
-collection1 = SuperCollection.new
-collection2 = SuperCollection.new
-collection3 = SuperCollection.new
-collection4 = SuperCollection.new
+bubblesort = Sorting.new(BubbleSortStrategy.new)
+selectionsort = Sorting.new(SelectionSortStrategy.new)
+collection1 = Collection.new
+collection2 = Collection.new
+collection3 = Collection.new
+collection4 = Collection.new
 
 15.times do
   collection1.push(rand(999))
