@@ -1,8 +1,11 @@
 package xyz.juraszek.visitor;
 
-public abstract class TreeVisitorWhichKnows {
+public abstract class TreeVisitorWhichKnows implements TreeVisitor {
+
+  @Override
   public abstract void visitLeaf(TreeLeaf leaf);
 
+  @Override
   public void visitNode(TreeNode node) {
     Tree leftSubtree = node.getLeftSubtree();
     Tree rightSubtree = node.getRightSubtree();
