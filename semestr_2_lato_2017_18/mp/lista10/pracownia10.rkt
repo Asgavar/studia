@@ -1,6 +1,7 @@
 #lang racket
 
-(require "calc.rkt")
+(require rackunit
+         "calc.rkt")
 
 (define (def-name p)
   (car p))
@@ -102,6 +103,40 @@
 (define (walk-tree t)
   (walk-tree-acc t 0))
 
+;; TODO: operatory nie musza byc takie same xD
+(define (binop-left-associative expr)
+  (if (binop-left-assoc? expr)
+      expr
+      (let ([next-right (binop-first (binop-right expr))]
+            [next-op (binop-op (binop-right expr))]
+            [expr-op (binop-op expr)])
+        (binop-left-associative (binop-cons-with-null next-op
+                                                      (binop-cons expr-op
+                                                                  (binop-left expr)
+                                                                  next-right)
+                                                      (binop-rest (binop-right expr)))))))
+
+(define (binop-first expr)
+  (if (number? expr)
+      expr
+      (second expr)))
+
+(define (binop-rest expr)
+  (if (number? expr)
+      null
+      (third expr)))
+
+(define (binop-cons-with-null operator left right)
+  (cond [(null? left) right]
+        [(null? right) left]
+        [else (binop-cons operator left right)]))
+
+(define (binop-left-assoc? expr)
+  (if (number? expr)
+      true
+      (and (number? (binop-right expr))
+           (binop-left-assoc? (binop-left expr)))))
+
 ;;
 
 (define arith-grammar
@@ -141,3 +176,7 @@
        arith-grammar
        'add-expr
        (string->list s))))))
+
+;;
+
+(check-equal? (binop-left-associative '(+ 41 (+ 42 (- 43 44)))) '(- (+ (+ 41 42) 43) 44))
