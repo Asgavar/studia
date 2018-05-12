@@ -103,7 +103,6 @@
 (define (walk-tree t)
   (walk-tree-acc t 0))
 
-;; TODO: operatory nie musza byc takie same xD
 (define (binop-left-associative expr)
   (if (binop-left-assoc? expr)
       expr
@@ -143,6 +142,8 @@
   (append num-grammar
      '([add-expr {ADD-MANY   mult-expr (token #\+) add-expr}
                  {ADD-SINGLE mult-expr}]
+       [sub-expr {SUB-MANY mult-expr (token #\-) sub-expr}
+                 {SUB-SINGLE mult-expr}]
        [mult-expr {MULT-MANY base-expr (token #\*) mult-expr}
                   {MULT-SINGLE base-expr}]
        [base-expr {BASE-NUM numb}
@@ -151,18 +152,28 @@
 (define (arith-walk-tree t)
   (cond [(eq? (node-name t) 'ADD-SINGLE)
          (arith-walk-tree (second t))]
+        [(eq? (node-name t) 'SUB-SINGLE)
+         (arith-walk-tree (second t))]
         [(eq? (node-name t) 'MULT-SINGLE)
          (arith-walk-tree (second t))]
         [(eq? (node-name t) 'ADD-MANY)
-         (binop-cons
-          '+
-          (arith-walk-tree (second t))
-          (arith-walk-tree (fourth t)))]
+         (binop-left-associative
+          (binop-cons
+           '+
+           (arith-walk-tree (second t))
+           (arith-walk-tree (fourth t))))]
+        [(eq? (node-name t) 'SUB-MANY)
+         (binop-left-associative
+          (binop-cons
+           '-
+           (arith-walk-tree (second t))
+           (arith-walk-tree (fourth t))))]
         [(eq? (node-name t) 'MULT-MANY)
-         (binop-cons
-          '*
-          (arith-walk-tree (second t))
-          (arith-walk-tree (fourth t)))]
+         (binop-left-associative
+          (binop-cons
+           '*
+           (arith-walk-tree (second t))
+           (arith-walk-tree (fourth t))))]
         [(eq? (node-name t) 'BASE-NUM)
          (walk-tree (second t))]
         [(eq? (node-name t) 'PARENS)
