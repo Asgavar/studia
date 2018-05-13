@@ -103,6 +103,7 @@
 (define (walk-tree t)
   (walk-tree-acc t 0))
 
+;; TODO: >= 3 operatory
 (define (binop-left-associative expr)
   (if (binop-left-assoc? expr)
       expr
@@ -140,12 +141,19 @@
 
 (define arith-grammar
   (append num-grammar
-     '([add-expr {ADD-MANY   mult-expr (token #\+) add-expr}
-                 {ADD-SINGLE mult-expr}]
-       [sub-expr {SUB-MANY mult-expr (token #\-) sub-expr}
-                 {SUB-SINGLE mult-expr}]
+     '([add-expr {ADD-MANY   mult-expr (token #\+) arith-expr}]
+                 ;{ADD-SINGLE mult-expr}]
+       [sub-expr {SUB-MANY mult-expr (token #\-) arith-expr}]
+                 ;{SUB-SINGLE (token #\-) div-expr}]
        [mult-expr {MULT-MANY base-expr (token #\*) mult-expr}
                   {MULT-SINGLE base-expr}]
+       [div-expr {DIV-MANY mult-expr (token #\/) arith-expr}]
+                 ;{DIV-SINGLE base-expr}]
+       [arith-expr {ARITH-ADD add-expr}
+                   {ARITH-SUB sub-expr}
+                   {ARITH-DIV div-expr}
+                   {ARITH-MULT mult-expr}
+                   {ARITH-BASE base-expr}]
        [base-expr {BASE-NUM numb}
                   {PARENS (token #\() add-expr (token #\))}])))
 
@@ -155,6 +163,8 @@
         [(eq? (node-name t) 'SUB-SINGLE)
          (arith-walk-tree (second t))]
         [(eq? (node-name t) 'MULT-SINGLE)
+         (arith-walk-tree (second t))]
+        [(eq? (node-name t) 'DIV-SINGLE)
          (arith-walk-tree (second t))]
         [(eq? (node-name t) 'ADD-MANY)
          (binop-left-associative
@@ -174,10 +184,17 @@
            '*
            (arith-walk-tree (second t))
            (arith-walk-tree (fourth t))))]
+        [(eq? (node-name t) 'DIV-MANY)
+         (binop-left-associative
+          (binop-cons
+           '/
+           (arith-walk-tree (second t))
+           (arith-walk-tree (fourth t))))]
         [(eq? (node-name t) 'BASE-NUM)
          (walk-tree (second t))]
         [(eq? (node-name t) 'PARENS)
-         (arith-walk-tree (third t))]))
+         (arith-walk-tree (third t))]
+        [else (arith-walk-tree (second t))]))
 
 (define (calc s)
  (eval
@@ -185,9 +202,16 @@
    (car
     (parse
        arith-grammar
-       'add-expr
+       'arith-expr
        (string->list s))))))
 
 ;;
 
-(check-equal? (binop-left-associative '(+ 41 (+ 42 (- 43 44)))) '(- (+ (+ 41 42) 43) 44))
+(check-equal? (binop-left-associative '(+ 41 (+ 42 (- 43 44))))
+              '(- (+ (+ 41 42) 43) 44))
+(check-equal? (arith-walk-tree (car (parse arith-grammar
+                                           'arith-expr
+                                           (string->list "21-90/3"))))
+              '(/ (- 21 90) 3))
+(check-eq? (calc "1000/50/2") 10)
+(check-not-eq? (calc "1000/50/2") 40)
