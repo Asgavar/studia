@@ -103,39 +103,40 @@
 (define (walk-tree t)
   (walk-tree-acc t 0))
 
-;; TODO: >= 3 operatory
 (define (binop-left-associative expr)
-  (if (binop-left-assoc? expr)
-      expr
-      (let ([next-right (binop-first (binop-right expr))]
-            [next-op (binop-op (binop-right expr))]
-            [expr-op (binop-op expr)])
-        (binop-left-associative (binop-cons-with-null next-op
-                                                      (binop-cons expr-op
-                                                                  (binop-left expr)
-                                                                  next-right)
-                                                      (binop-rest (binop-right expr)))))))
+  (let* ([expr-ops-and-numbers (binop-ops-and-numbers '() '() expr)]
+         [expr-ops (car expr-ops-and-numbers)]
+         [expr-numbers (cdr expr-ops-and-numbers)]
+         [binop-to-start-with (binop-cons (first expr-ops)
+                                          (first expr-numbers)
+                                          (second expr-numbers))])
+    (binop-construct-left-assoc (cdr expr-ops)
+                                (cddr expr-numbers)
+                                binop-to-start-with)))
 
-(define (binop-first expr)
+(define (binop-construct-left-assoc ops numbers expr-so-far)
+  (if (null? ops)
+      expr-so-far
+      (let ([new-ops (cdr ops)]
+            [new-numbers (cdr numbers)])
+        (binop-construct-left-assoc new-ops
+                                    new-numbers
+                                    (binop-cons (car ops)
+                                                expr-so-far
+                                                (car numbers))))))
+
+(define (binop-ops-and-numbers ops numbers expr)
   (if (number? expr)
-      expr
-      (second expr)))
-
-(define (binop-rest expr)
-  (if (number? expr)
-      null
-      (third expr)))
-
-(define (binop-cons-with-null operator left right)
-  (cond [(null? left) right]
-        [(null? right) left]
-        [else (binop-cons operator left right)]))
-
-(define (binop-left-assoc? expr)
-  (if (number? expr)
-      true
-      (and (number? (binop-right expr))
-           (binop-left-assoc? (binop-left expr)))))
+      (cons ops (append numbers
+                        (list expr)))
+      (let* ([left-binop (binop-left expr)]
+             [right-binop (binop-right expr)]
+             [new-ops (append ops (list (binop-op expr)))]
+             [left-processed (binop-ops-and-numbers new-ops numbers left-binop)]
+             [left-ops (car left-processed)]
+             [left-numbers (cdr left-processed)]
+             [right-processed (binop-ops-and-numbers left-ops left-numbers right-binop)])
+        right-processed)))
 
 ;;
 
@@ -167,11 +168,12 @@
         [(eq? (node-name t) 'DIV-SINGLE)
          (arith-walk-tree (second t))]
         [(eq? (node-name t) 'ADD-MANY)
-         (binop-left-associative
+         ;(binop-left-associative
           (binop-cons
            '+
            (arith-walk-tree (second t))
-           (arith-walk-tree (fourth t))))]
+           ;(arith-walk-tree (fourth t))))]
+           (arith-walk-tree (fourth t)))]
         [(eq? (node-name t) 'SUB-MANY)
          (binop-left-associative
           (binop-cons
