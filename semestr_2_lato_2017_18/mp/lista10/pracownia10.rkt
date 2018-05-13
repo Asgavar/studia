@@ -103,16 +103,25 @@
 (define (walk-tree t)
   (walk-tree-acc t 0))
 
+(define (binop-left-assoc? expr)
+  (if (number? expr)
+      true
+      (and (number? (binop-right expr))
+           (binop-left-assoc? (binop-left expr)))))
+
 (define (binop-left-associative expr)
-  (let* ([expr-ops-and-numbers (binop-ops-and-numbers '() '() expr)]
-         [expr-ops (car expr-ops-and-numbers)]
-         [expr-numbers (cdr expr-ops-and-numbers)]
-         [binop-to-start-with (binop-cons (first expr-ops)
-                                          (first expr-numbers)
-                                          (second expr-numbers))])
-    (binop-construct-left-assoc (cdr expr-ops)
-                                (cddr expr-numbers)
-                                binop-to-start-with)))
+  (if (or (number? expr)
+          (binop-left-assoc? expr))
+      expr
+      (let* ([expr-ops-and-numbers (binop-ops-and-numbers '() '() expr)]
+             [expr-ops (car expr-ops-and-numbers)]
+             [expr-numbers (cdr expr-ops-and-numbers)]
+             [binop-to-start-with (binop-cons (first expr-ops)
+                                              (first expr-numbers)
+                                              (second expr-numbers))])
+        (binop-construct-left-assoc (cdr expr-ops)
+                                    (cddr expr-numbers)
+                                    binop-to-start-with))))
 
 (define (binop-construct-left-assoc ops numbers expr-so-far)
   (if (null? ops)
@@ -143,60 +152,60 @@
 (define arith-grammar
   (append num-grammar
      '([add-expr {ADD-MANY   mult-expr (token #\+) arith-expr}]
-                 ;{ADD-SINGLE mult-expr}]
        [sub-expr {SUB-MANY mult-expr (token #\-) arith-expr}]
-                 ;{SUB-SINGLE (token #\-) div-expr}]
-       [mult-expr {MULT-MANY base-expr (token #\*) mult-expr}
+       [mult-expr {MULT-MANY base-expr (token #\*) arith-expr}
                   {MULT-SINGLE base-expr}]
        [div-expr {DIV-MANY mult-expr (token #\/) arith-expr}]
-                 ;{DIV-SINGLE base-expr}]
        [arith-expr {ARITH-ADD add-expr}
                    {ARITH-SUB sub-expr}
                    {ARITH-DIV div-expr}
                    {ARITH-MULT mult-expr}
                    {ARITH-BASE base-expr}]
        [base-expr {BASE-NUM numb}
-                  {PARENS (token #\() add-expr (token #\))}])))
+                  {PARENS (token #\() arith-expr (token #\))}])))
 
 (define (arith-walk-tree t)
-  (cond [(eq? (node-name t) 'ADD-SINGLE)
+  (cond [(eq? (node-name t) 'MULT-SINGLE)
          (arith-walk-tree (second t))]
-        [(eq? (node-name t) 'SUB-SINGLE)
-         (arith-walk-tree (second t))]
-        [(eq? (node-name t) 'MULT-SINGLE)
-         (arith-walk-tree (second t))]
-        [(eq? (node-name t) 'DIV-SINGLE)
-         (arith-walk-tree (second t))]
-        [(eq? (node-name t) 'ADD-MANY)
-         ;(binop-left-associative
-          (binop-cons
-           '+
-           (arith-walk-tree (second t))
-           ;(arith-walk-tree (fourth t))))]
-           (arith-walk-tree (fourth t)))]
-        [(eq? (node-name t) 'SUB-MANY)
-         (binop-left-associative
-          (binop-cons
-           '-
-           (arith-walk-tree (second t))
-           (arith-walk-tree (fourth t))))]
-        [(eq? (node-name t) 'MULT-MANY)
-         (binop-left-associative
-          (binop-cons
-           '*
-           (arith-walk-tree (second t))
-           (arith-walk-tree (fourth t))))]
-        [(eq? (node-name t) 'DIV-MANY)
-         (binop-left-associative
-          (binop-cons
-           '/
-           (arith-walk-tree (second t))
-           (arith-walk-tree (fourth t))))]
+        [(member (node-name t) '(ADD-MANY
+                                 SUB-MANY
+                                 MULT-MANY
+                                 DIV-MANY))
+         (let* ([appropriate-op (node-name->op-symbol (node-name t))]
+                [default-binop (binop-cons appropriate-op
+                                           (arith-walk-tree (second t))
+                                           (arith-walk-tree (fourth t)))])
+           (if (parens-inside? t)
+               default-binop
+               (binop-left-associative default-binop)))]
         [(eq? (node-name t) 'BASE-NUM)
          (walk-tree (second t))]
         [(eq? (node-name t) 'PARENS)
          (arith-walk-tree (third t))]
         [else (arith-walk-tree (second t))]))
+
+(define (node-name->op-symbol nn)
+  (cond [(eq? nn 'ADD-MANY) '+]
+        [(eq? nn 'SUB-MANY) '-]
+        [(eq? nn 'MULT-MANY) '*]
+        [(eq? nn 'DIV-MANY) '/]))
+
+(define caadadr (compose car car cdr car cdr))
+
+(define (parens-inside? t)
+  (and (> (length t) 2)
+       (let ([left-subtree (second t)]
+             [right-subtree (fourth t)])
+         (or (eq? (caadr left-subtree) 'PARENS)
+             (eq? (caadr right-subtree) 'PARENS)
+             (eq? (caadadr left-subtree) 'PARENS)
+             (eq? (caadadr right-subtree) 'PARENS)
+             (and (>= (length left-subtree) 4)
+                  (parens-inside? left-subtree))
+             (and (>= (length right-subtree) 4)
+                  (parens-inside? right-subtree))
+             (parens-inside? (second left-subtree))
+             (parens-inside? (second right-subtree))))))
 
 (define (calc s)
  (eval
@@ -217,3 +226,10 @@
               '(/ (- 21 90) 3))
 (check-eq? (calc "1000/50/2") 10)
 (check-not-eq? (calc "1000/50/2") 40)
+(check-eq? (calc "90-10-20-40-5") 15)
+(check-eq? (calc "9-(8-2)") 3)
+(check-eq? (calc "2-9-10") -17)
+(check-eq? (calc "2*(7-2)") 10)
+(check-equal? (calc "88/37/21/14")
+              (calc "(((88/37)/21)/14)"))
+(check-eq? (calc "2-(3/(4-1))") 1)
