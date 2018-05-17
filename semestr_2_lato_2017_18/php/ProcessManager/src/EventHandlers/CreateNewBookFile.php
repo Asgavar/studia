@@ -8,8 +8,11 @@ class CreateNewBookFile
 {
     public function __invoke(BookLent $event)
     {
-        echo $event->getBookInstanceId() . PHP_EOL;
-        echo $event->getAccountId() . PHP_EOL;
-        echo $event->getDateAsSecondsSinceJan1970() . PHP_EOL;
+        file_put_contents(
+            "book_{$event->getBookInstanceId()}",
+            "{$event->getAccountId()}" .
+            PHP_EOL .
+            "{$event->getDateAsSecondsSinceJan1970()}"
+        );
     }
 }
