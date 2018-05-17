@@ -4,9 +4,9 @@ namespace Asgavar\ProcessManager\EventHandlers;
 
 use Asgavar\ProcessManager\Events\BookLent;
 
-class BookLentEventHandler
+class CreateNewBookFile
 {
-    public function handle(BookLent $event)
+    public function __invoke(BookLent $event)
     {
         echo $event->getBookInstanceId() . PHP_EOL;
         echo $event->getAccountId() . PHP_EOL;

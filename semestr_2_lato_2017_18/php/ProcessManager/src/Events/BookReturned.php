@@ -16,4 +16,28 @@ class BookReturned
         $this->accountId = $accountId;
         $this->returnTimeAsSecondsSinceJan1970 = $returnTimeAsSecondsSinceJan1970;
     }
+
+    /**
+     * @return int
+     */
+    public function getBookInstanceId()
+    {
+        return $this->bookInstanceId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getReturnTimeAsSecondsSinceJan1970()
+    {
+        return $this->returnTimeAsSecondsSinceJan1970;
+    }
 }
