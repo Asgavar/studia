@@ -125,6 +125,12 @@
     (make-fifo (fifo-input-list some-fifo)
                (cdr (fifo-output-list some-fifo)))))
 
+(define (drain-bag bag-to-be-drained acc)
+  (if (bag-empty? bag-to-be-drained)
+      acc
+      (drain-bag (bag-remove bag-to-be-drained)
+                 (cons (bag-peek bag-to-be-drained) acc))))
+
 ;; sygnatura dla przeszukiwania grafu
 (define-signature graph-search^
   (search))
@@ -147,8 +153,7 @@
               (outnodes g (bag-peek b)))
              (cons (bag-peek b) l))]
         [else (it g (bag-remove b) l)]))
-    (it g (bag-insert empty-bag n) '()))
-  )
+    (it g (bag-insert empty-bag n) '())))
 
 ;; otwarcie komponentu grafu
 (define-values/invoke-unit/infer simple-graph@)
@@ -160,12 +165,14 @@
    (list (edge 1 3)
          (edge 1 2)
          (edge 2 4))))
-;; TODO: napisz inne testowe grafy!
 
 ;; otwarcie komponentu stosu
 ; (define-values/invoke-unit/infer bag-stack@)
 ;; opcja 2: otwarcie komponentu kolejki
 (define-values/invoke-unit/infer bag-fifo@)
+
+(define (whatever->boolean whatever)
+  (not (not whatever)))
 
 ;; testy w Quickchecku
 (require quickcheck)
@@ -175,13 +182,23 @@
 (quickcheck
  (property ([s arbitrary-symbol])
            (bag-empty? (bag-remove (bag-insert empty-bag s)))))
-;; TODO: napisz inne własności do sprawdzenia!
-;; jeśli jakaś własność dotyczy tylko stosu lub tylko kolejki,
-;; wykomentuj ją i opisz to w komentarzu powyżej własności
+
+;; gdy wrzucimy pewne elementy do torby, to możemy spodziewać się,
+;; że je w tej torbie znajdziemy
+(quickcheck
+ (property ([list-to-put (arbitrary-one-of equal? (list (arbitrary-list arbitrary-char)
+                                                        (arbitrary-list arbitrary-string)
+                                                        (arbitrary-list arbitrary-symbol)
+                                                        (arbitrary-list arbitrary-integer)))])
+            (let ([bag-full-of-things (foldl (λ (elem bag-so-far) (bag-insert bag-so-far elem))
+                                             empty-bag
+                                             list-to-put)])
+              (andmap (λ (elem) (whatever->boolean (member elem list-to-put)))
+                      (drain-bag bag-full-of-things '())))))
 
 ;; otwarcie komponentu przeszukiwania
 (define-values/invoke-unit/infer graph-search@)
 
 ;; uruchomienie przeszukiwania na przykładowym grafie
-(search test-graph 1)
+(displayln (search test-graph 1))
 ;; TODO: uruchom przeszukiwanie na swoich przykładowych grafach!
