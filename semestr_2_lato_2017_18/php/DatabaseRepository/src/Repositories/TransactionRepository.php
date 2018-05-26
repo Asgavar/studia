@@ -1,9 +1,9 @@
 <?php
 
-namespace Asgavar\Repositories;
+namespace Asgavar\DatabaseRepository\Repositories;
 
 use Ramsey\Uuid\Uuid;
-use Asgavar\Aggregates\Transaction;
+use Asgavar\DatabaseRepository\Aggregates\Transaction;
 
 interface TransactionRepository
 {

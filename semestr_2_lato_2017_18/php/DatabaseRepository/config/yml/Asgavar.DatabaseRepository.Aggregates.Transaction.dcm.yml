@@ -1,0 +1,16 @@
+Asgavar\DatabaseRepository\Aggregates\Transaction:
+  type: entity
+  table: transaction
+  id:
+    uuid:
+      type: string
+  fields:
+    fromAccount:
+      type: string
+    toAccount:
+      type: string
+    status:
+      type: string
+  embedded:
+    amount:
+      class: Money\Money

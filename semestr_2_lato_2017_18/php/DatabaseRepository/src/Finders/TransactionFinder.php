@@ -1,6 +1,6 @@
 <?php
 
-namespace Asgavar\Finders;
+namespace Asgavar\DatabaseRepository\Finders;
 
 interface TransactionFinder
 {
