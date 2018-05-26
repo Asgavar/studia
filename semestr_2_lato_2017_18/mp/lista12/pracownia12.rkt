@@ -94,12 +94,36 @@
 
 ;; struktura danych - kolejka FIFO
 ;; do zaimplementowania przez studentów
-;; (define-unit bag-fifo@
-;;   (import)
-;;   (export bag^)
+(define-unit bag-fifo@
+  (import)
+  (export bag^)
 
-;; ;; TODO: zaimplementuj kolejkę
-;; )
+  (struct fifo (input-list output-list))
+
+  (define (make-fifo input-list output-list)
+    (if (null? output-list)
+        (fifo '() (reverse input-list))
+        (fifo input-list output-list)))
+
+  (define (bag? fifo-or-not)
+    (fifo? fifo-or-not))
+
+  (define (bag-empty? some-fifo)
+    (and (null? (fifo-input-list some-fifo))
+         (null? (fifo-output-list some-fifo))))
+
+  (define empty-bag (fifo '() '()))
+
+  (define (bag-insert fifo-to-extend new-element)
+    (make-fifo (cons new-element (fifo-input-list fifo-to-extend))
+               (fifo-output-list fifo-to-extend)))
+
+  (define (bag-peek some-fifo)
+    (car (fifo-output-list some-fifo)))
+
+  (define (bag-remove some-fifo)
+    (make-fifo (fifo-input-list some-fifo)
+               (cdr (fifo-output-list some-fifo)))))
 
 ;; sygnatura dla przeszukiwania grafu
 (define-signature graph-search^
@@ -139,9 +163,9 @@
 ;; TODO: napisz inne testowe grafy!
 
 ;; otwarcie komponentu stosu
-(define-values/invoke-unit/infer bag-stack@)
+; (define-values/invoke-unit/infer bag-stack@)
 ;; opcja 2: otwarcie komponentu kolejki
-; (define-values/invoke-unit/infer bag-fifo@)
+(define-values/invoke-unit/infer bag-fifo@)
 
 ;; testy w Quickchecku
 (require quickcheck)
