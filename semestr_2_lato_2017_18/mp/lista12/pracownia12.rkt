@@ -64,8 +64,8 @@
 (define-signature bag^
   ((contracted
     [bag?       (-> any/c boolean?)]
-    [empty-bag  (and/c bag? bag-empty?)]
     [bag-empty? (-> bag? boolean?)]
+    [empty-bag  (and/c bag? bag-empty?)]
     [bag-insert (-> bag? any/c (and/c bag? (not/c bag-empty?)))]
     [bag-peek   (-> (and/c bag? (not/c bag-empty?)) any/c)]
     [bag-remove (-> (and/c bag? (not/c bag-empty?)) bag?)])))
@@ -75,17 +75,31 @@
   (import)
   (export bag^)
 
-;; TODO: zaimplementuj stos
-)
+  (define (bag? stack-or-not)
+    (list? stack-or-not))
+
+  (define (bag-empty? some-stack)
+    (null? some-stack))
+
+  (define empty-bag null)
+
+  (define (bag-insert stack-to-extend new-element)
+    (cons new-element stack-to-extend))
+
+  (define (bag-peek some-stack)
+    (car some-stack))
+
+  (define (bag-remove some-stack)
+    (cdr some-stack)))
 
 ;; struktura danych - kolejka FIFO
 ;; do zaimplementowania przez studentów
-(define-unit bag-fifo@
-  (import)
-  (export bag^)
+;; (define-unit bag-fifo@
+;;   (import)
+;;   (export bag^)
 
-;; TODO: zaimplementuj kolejkę
-)
+;; ;; TODO: zaimplementuj kolejkę
+;; )
 
 ;; sygnatura dla przeszukiwania grafu
 (define-signature graph-search^
