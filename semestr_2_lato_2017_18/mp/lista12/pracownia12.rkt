@@ -166,8 +166,26 @@
          (edge 1 2)
          (edge 2 4))))
 
+(define test-graph-2
+  (graph
+   (list 1 2 3 4 5)
+   (list (edge 1 2)
+         (edge 2 3)
+         (edge 3 4)
+         (edge 4 5))))
+
+(define test-graph-3
+  (graph
+   (list -9 37 88 21 42 14)
+   (list (edge -9 42)
+         (edge -9 37)
+         (edge 42 14)
+         (edge 14 21)
+         (edge 21 37)
+         (edge 37 88))))
+
 ;; otwarcie komponentu stosu
-; (define-values/invoke-unit/infer bag-stack@)
+;(define-values/invoke-unit/infer bag-stack@)
 ;; opcja 2: otwarcie komponentu kolejki
 (define-values/invoke-unit/infer bag-fifo@)
 
@@ -201,4 +219,12 @@
 
 ;; uruchomienie przeszukiwania na przykładowym grafie
 (displayln (search test-graph 1))
-;; TODO: uruchom przeszukiwanie na swoich przykładowych grafach!
+;; niezależnie od implementacji przeszukiwania wynikiem powinny być kolejne
+;; liczby naturalne
+(displayln (search test-graph-2 1))
+(displayln (search test-graph-2 2))
+(displayln (search test-graph-2 4))
+;;
+(displayln (search test-graph-3 -9))
+(displayln (search test-graph-3 42))
+(displayln (search test-graph-3 37))
