@@ -19,6 +19,8 @@ class DoctrineTransactionFinder implements TransactionFinder
             ->createQueryBuilder()
             ->select('t')
             ->from('Asgavar\DatabaseRepository\Aggregates\Transaction', 't')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getArrayResult();
     }
