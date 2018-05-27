@@ -131,6 +131,11 @@
       (drain-bag (bag-remove bag-to-be-drained)
                  (cons (bag-peek bag-to-be-drained) acc))))
 
+(define (put-n-things-in-bag bag-to-put-in things)
+  (if (null? things)
+      bag-to-put-in
+      (put-n-things-in-bag (bag-insert bag-to-put-in (car things)) (cdr things))))
+
 ;; sygnatura dla przeszukiwania grafu
 (define-signature graph-search^
   (search))
@@ -213,6 +218,36 @@
                                              list-to-put)])
               (andmap (λ (elem) (whatever->boolean (member elem list-to-put)))
                       (drain-bag bag-full-of-things '())))))
+
+;; uzupełnianie dwóch różnych toreb niezależnie, ale tymi samymi elementami
+;; powinno sprawić, że torby te będą od siebie nieodróżnialne pod względem zawartości
+(quickcheck
+ (property ([element-1 arbitrary-integer]
+            [element-2 arbitrary-symbol]
+            [element-3 arbitrary-string])
+           (let ([bag-1 (bag-insert
+                         (bag-insert
+                          (bag-insert empty-bag element-1) element-2) element-3)]
+                 [bag-2 (bag-insert
+                         (bag-insert
+                          (bag-insert empty-bag element-1) element-2) element-3)])
+             (equal? (drain-bag bag-1 '())
+                     (drain-bag bag-2 '())))))
+
+;; ;; własność specyficzna dla stosu:
+;; ;; elementy umieszczone na stosie będą ściągane z niego w odwrotnej kolejności
+;; ;; uwaga: drain-bag zwraca listę już odwróconą
+;; (quickcheck
+;;  (property ([elements-to-put (arbitrary-list arbitrary-integer)])
+;;            (equal? elements-to-put
+;;                    (drain-bag (put-n-things-in-bag empty-bag elements-to-put) '()))))
+
+;; ;; własność specyficzna dla kolejki:
+;; ;; elementy umieszczone na kolejce będą ściągane z niej w kolejności układania
+;; (quickcheck
+;;  (property ([elements-to-put (arbitrary-list arbitrary-integer)])
+;;            (equal? (reverse elements-to-put)
+;;                    (drain-bag (put-n-things-in-bag empty-bag elements-to-put) '()))))
 
 ;; otwarcie komponentu przeszukiwania
 (define-values/invoke-unit/infer graph-search@)
