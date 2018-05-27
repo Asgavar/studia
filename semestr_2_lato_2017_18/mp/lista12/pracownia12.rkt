@@ -181,13 +181,13 @@
 
 (define test-graph-3
   (graph
-   (list -9 37 88 21 42 14)
+   (list -9 38 88 22 42 14)
    (list (edge -9 42)
-         (edge -9 37)
+         (edge -9 38)
          (edge 42 14)
-         (edge 14 21)
-         (edge 21 37)
-         (edge 37 88))))
+         (edge 14 22)
+         (edge 22 38)
+         (edge 38 88))))
 
 ;; otwarcie komponentu stosu
 ;(define-values/invoke-unit/infer bag-stack@)
@@ -262,4 +262,4 @@
 ;;
 (displayln (search test-graph-3 -9))
 (displayln (search test-graph-3 42))
-(displayln (search test-graph-3 37))
+(displayln (search test-graph-3 38))
