@@ -1,0 +1,10 @@
+{
+    "require-dev": {
+        "nelmio/alice": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Asgavar\\DatabasePerformance\\": "src/"
+        }
+    }
+}
