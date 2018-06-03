@@ -26,28 +26,41 @@
 (define %row-ok
   (%rel (x x-minus-one xs y ys)
         [((cons x xs) (cons '* ys))
-         (%> x 0)
+         (%= x 1)
+         (%row-ok (cons 0 xs) ys)]
+        [((cons x xs) (cons '* (cons '* ys)))
+         (%> x 1)
          (%is x-minus-one (- x 1))
-         (%row-ok (cons x-minus-one xs) ys)]
-        [(null null)]
+         (%row-ok (cons x-minus-one xs) (cons '* ys))]
+        [(null ys)]
         [('(0) null)]
         [((cons 0 xs) (cons '_ ys))
          (%row-ok xs ys)]
-        [(xs (cons '_ ys))
-         (%row-ok xs ys)]))
-;; TODO: napisz potrzebne ci pomocnicze predykaty
+        [((cons x xs) (cons '_ ys))
+         (%> x 0)
+         (%row-ok (cons x xs) ys)]))
+
+(define %all-rows-ok
+  (%rel (all-rows-numbers all-rows-symbols first-row-symbols first-row-numbers)
+        [(null null)]
+        [((cons first-row-numbers all-rows-numbers)
+          (cons first-row-symbols all-rows-symbols))
+         (%row-ok first-row-numbers first-row-symbols)
+         (%all-rows-ok all-rows-numbers all-rows-symbols)]))
 
 ;; funkcja rozwiązująca zagadkę
 (define (solve rows cols)
   (define board (make-rect (length cols) (length rows)))
   (define tboard (transpose board))
-  (define ret (%which (xss)
+  (define ret (%which (xss yss)
                       (%= xss board)
-;; TODO: uzupełnij!
-                      ))
-  (displayln board)
-  (displayln tboard)
+                      (%= yss tboard)
+                      (%all-rows-ok rows board)
+                      (%all-rows-ok cols tboard)))
   (and ret (cdar ret)))
+
+(displayln (%which () (%row-ok '(1 2 3 4)
+                               '(_ * _ * * _ _ _ * * * _ * * * *))))
 
 ;; testy
 (equal? (solve '((2) (1) (1)) '((1 1) (2)))
@@ -60,4 +73,3 @@
           (* * _ *)
           (* _ _ *)
           (_ * * _)))
-;; TODO: możesz dodać własne testy
