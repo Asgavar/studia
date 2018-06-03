@@ -24,10 +24,17 @@
 ;; predykat binarny
 ;; (%row-ok xs ys) oznacza, że xs opisuje wiersz (lub kolumnę) ys
 (define %row-ok
-  (%rel ()
-;; TODO: uzupełnij!
-  ))
-
+  (%rel (x x-minus-one xs y ys)
+        [((cons x xs) (cons '* ys))
+         (%> x 0)
+         (%is x-minus-one (- x 1))
+         (%row-ok (cons x-minus-one xs) ys)]
+        [(null null)]
+        [('(0) null)]
+        [((cons 0 xs) (cons '_ ys))
+         (%row-ok xs ys)]
+        [(xs (cons '_ ys))
+         (%row-ok xs ys)]))
 ;; TODO: napisz potrzebne ci pomocnicze predykaty
 
 ;; funkcja rozwiązująca zagadkę
@@ -38,6 +45,8 @@
                       (%= xss board)
 ;; TODO: uzupełnij!
                       ))
+  (displayln board)
+  (displayln tboard)
   (and ret (cdar ret)))
 
 ;; testy
