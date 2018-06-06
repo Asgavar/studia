@@ -1,3 +1,0 @@
-<?php
-
-$zmienna = 0;
