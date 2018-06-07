@@ -1,0 +1,30 @@
+                                    QUERY PLAN                                     
+-----------------------------------------------------------------------------------
+ Append  (cost=0.00..51.75 rows=800 width=70)
+   ->  Seq Scan on transactions  (cost=0.00..0.00 rows=1 width=69)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+   ->  Seq Scan on transactions_q1  (cost=0.00..13.10 rows=199 width=70)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+   ->  Seq Scan on transactions_q2  (cost=0.00..11.98 rows=201 width=69)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+   ->  Seq Scan on transactions_q3  (cost=0.00..13.20 rows=194 width=68)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+   ->  Seq Scan on transactions_q4  (cost=0.00..13.48 rows=205 width=70)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+(11 rows)
+
+                                    QUERY PLAN                                     
+-----------------------------------------------------------------------------------
+ Append  (cost=0.00..51.75 rows=800 width=4)
+   ->  Seq Scan on transactions  (cost=0.00..0.00 rows=1 width=4)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+   ->  Seq Scan on transactions_q1  (cost=0.00..13.10 rows=199 width=4)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+   ->  Seq Scan on transactions_q2  (cost=0.00..11.98 rows=201 width=4)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+   ->  Seq Scan on transactions_q3  (cost=0.00..13.20 rows=194 width=4)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+   ->  Seq Scan on transactions_q4  (cost=0.00..13.48 rows=205 width=4)
+         Filter: (date_time >= '1998-05-02 00:00:00'::timestamp without time zone)
+(11 rows)
+
