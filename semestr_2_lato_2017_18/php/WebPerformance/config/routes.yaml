@@ -1,0 +1,7 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+nbp_avg_rate_for_day:
+  path: /nbp/{currencyCode}/{date}
+  controller: App\Controller\NbpController::avg_rate_for_day
