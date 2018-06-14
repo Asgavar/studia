@@ -1,4 +1,16 @@
 {
+    "cache/adapter-common": {
+        "version": "1.0.0"
+    },
+    "cache/hierarchical-cache": {
+        "version": "1.0.0"
+    },
+    "cache/redis-adapter": {
+        "version": "1.0.0"
+    },
+    "cache/tag-interop": {
+        "version": "1.0.0"
+    },
     "maciej-sz/nbp-php": {
         "version": "0.2.1"
     },
