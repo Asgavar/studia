@@ -17,6 +17,11 @@ let replace stream replace_with replace_each =
 let take stream each_nth =
   fun n -> stream (n * each_nth)
 
+let scan stream f a =
+  let rec new_stream n =
+    if n = 0 then (f a (stream 0)) else (f (new_stream (n - 1)) (stream n))
+  in new_stream
+
 let rec _tabulate start finish so_far stream =
   if so_far > finish then [] else
   if so_far >= start then
