@@ -6,3 +6,7 @@
 vendor/
 eclimd.log
 workbench.xmi
+*.cmi
+*.cmo
+*.log
+*.cache
