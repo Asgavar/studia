@@ -80,3 +80,13 @@ let rec merge_sort xs =
       let left_half = fst halves in
       let right_half = snd halves in
         merge_tailrec (fun a b -> a < b) (merge_sort left_half) (merge_sort right_half)
+
+
+let rec all_suffixes xs =
+  match xs with
+    [] -> [] :: []
+  | x :: tail -> xs :: all_suffixes tail
+
+
+let all_prefixes xs =
+  custom_map (fun prefix -> custom_reverse prefix) (all_suffixes (custom_reverse xs))
