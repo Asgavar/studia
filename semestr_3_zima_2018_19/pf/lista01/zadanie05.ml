@@ -7,4 +7,4 @@ let cor bool1 bool2 =
 let cbool_of_bool boolval =
   if boolval then ctrue else cfalse
 let bool_of_cbool cboolval =
-  if cboolval true false then true else false
+  cboolval true false
