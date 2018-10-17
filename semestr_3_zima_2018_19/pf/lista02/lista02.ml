@@ -20,20 +20,47 @@ let custom_reverse xs =
   in _custom_reverse [] xs
 
 
+let custom_head xs =
+  match xs with
+    [] -> failwith "Empty list was given"
+  | x :: tail -> x
+
+
+let custom_tail xs =
+  match xs with
+    [] -> failwith "Empty list was given"
+  | x :: tail -> tail
+
+
+let custom_length xs =
+  let rec _custom_length xs so_far =
+    match xs with
+      [] -> so_far
+    | x :: tail -> _custom_length tail (so_far + 1)
+  in _custom_length xs 0
+
+
+let rec sublists_map f xs =
+  match xs with
+    [] -> []
+  | x :: tail ->
+      (f x) :: x :: (sublists_map f tail)
+
+
 let rec sublists xs =
   match xs with
     [] -> [[]]
   | x :: tail ->
-      (custom_map (fun subl -> x :: subl) (sublists tail)) @ sublists tail
+      (sublists_map (fun subl -> x :: subl) (sublists tail))
 
 
 let cycle xs n =
   let rec _cycle list_so_far xs n =
-    match xs with
-      [] -> []
-    | x :: [] -> x :: (custom_reverse list_so_far)
-    | x :: tail -> _cycle (x :: list_so_far) tail n
-  in _cycle [] xs n
+    match (xs, n) with
+      ([], _) -> []
+    | (_, 0) -> xs @ custom_reverse list_so_far
+    | (x :: tail, n) -> _cycle (x :: list_so_far) tail (n - 1)
+  in _cycle [] xs ((custom_length xs) - n)
 
 
 let rec merge cmp left right =
@@ -60,6 +87,21 @@ let merge_tailrec cmp left right =
   in custom_reverse (_merge_tailrec [] left right)
 
 
+let merge_tailrec_without_reversing cmp left right =
+  let rec _merge_tailrec acc left right =
+    match (left, right) with
+      ([], []) -> acc
+    | ([], r :: right_tail) ->
+        _merge_tailrec (r :: acc) [] right_tail
+    | (l :: left_tail, []) ->
+        _merge_tailrec (l :: acc) left_tail []
+    | (l :: left_tail, r :: right_tail) ->
+        if not (cmp l r)
+        then _merge_tailrec (l :: acc) left_tail right
+        else _merge_tailrec (r :: acc) left right_tail
+  in _merge_tailrec [] left right
+
+
 (* wynikiem jest odwrocona polowka,
 ale w tym wypadku nie ma to znaczenia *)
 let halve xs =
@@ -67,7 +109,7 @@ let halve xs =
   let rec _halve acc xs left_to_cut =
     match left_to_cut with
       0 -> (acc, xs)
-    | _ -> _halve (List.hd xs :: acc) (List.tl xs) (left_to_cut - 1)
+    | _ -> _halve (custom_head xs :: acc) (custom_tail xs) (left_to_cut - 1)
   in _halve [] xs half_length
 
 
@@ -90,3 +132,50 @@ let rec all_suffixes xs =
 
 let all_prefixes xs =
   custom_map (fun prefix -> custom_reverse prefix) (all_suffixes (custom_reverse xs))
+
+
+let rec insert_at_nth xs elem n =
+  match (xs, n) with
+    ([], _) -> elem :: []
+  | (xs, 0) -> elem :: xs
+  | (x :: tail, n) -> x :: insert_at_nth tail elem (n - 1)
+
+
+let rec insert_at_each_position xs elem =
+  let rec _aux acc xs current_n =
+    match current_n with
+      -1 -> acc
+    | n -> _aux ((insert_at_nth xs elem n) :: acc) xs (current_n - 1)
+  in _aux [] xs (List.length xs)
+
+
+let rec custom_append_map f xs =
+  match xs with
+    [] -> []
+  | x :: tail -> (f x) @ custom_append_map f tail
+
+
+let rec all_perms xs =
+  match xs with
+    [] -> [[]]
+  | x :: tail ->  custom_append_map (fun perm -> insert_at_each_position perm x) (all_perms tail)
+
+
+let partition predicate xs =
+  let rec _partition dos donts xs =
+    match xs with
+      [] -> (dos, donts)
+    | x :: tail -> if (predicate x)
+      then _partition (x :: dos) donts tail
+      else _partition dos (x :: donts) tail
+  in _partition [] [] xs
+
+
+let rec quicksort xs =
+  match xs with
+    [] -> []
+  | x :: [] -> xs
+  | _ :: _ -> let halves = partition (fun x -> x < custom_head xs) xs in
+              let left_half = fst halves in
+              let right_half = snd halves in
+    (quicksort left_half) @ (quicksort right_half)
