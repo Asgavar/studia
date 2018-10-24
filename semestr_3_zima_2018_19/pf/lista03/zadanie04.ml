@@ -37,7 +37,7 @@ let mult_vec vector matrix =
 
 let mult_matrices m1 m2 =
   let rows_with_idx = zip m1 (upto (List.length m1))
-  in List.map (fun row_idx -> mult_vec (fst row_idx) (nth_column m2 (snd row_idx)))
+  in List.map (fun row_idx -> mult_vec (fst row_idx) [(nth_column m2 (snd row_idx))])
     rows_with_idx
 
 
