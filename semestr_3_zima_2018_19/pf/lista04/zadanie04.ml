@@ -63,6 +63,29 @@ let rec nnf form =
   | Disj (left_form, right_form) -> Disj ((nnf left_form), (nnf right_form))
   | Conj (left_form, right_form) -> Conj ((nnf left_form), (nnf right_form))
 
+let satisfied_varvals form =
+  List.filter (fun vals -> formulaval form vals) (all_values (vars_used form))
+
+let unsatisfied_varvals form =
+  List.filter (fun vals -> not (formulaval form vals)) (all_values (vars_used form))
+
+let rec filp_varvals vv =
+  match vv with
+    [] -> []
+  | hd :: tl -> ((fst hd), not (snd hd)) :: filp_varvals tl
+
+let dnf form =
+  satisfied_varvals form
+
+let cnf form =
+  List.map (fun vv -> filp_varvals vv) (unsatisfied_varvals form)
+
+let is_tautology_syntactically form =
+  (List.length (dnf form)) = int_of_float (2. ** float_of_int (List.length (vars_used form)))
+
+let is_unsatisfiable_syntactically form =
+  (List.length (cnf form)) = int_of_float (2. ** float_of_int (List.length (vars_used form)))
+
 let test_contains = contains [1; 2; 3] 3
 let test_contains = contains [1; 2; 3] 0
 let test_remove_duplicates = remove_duplicates [1; 2; 3; 1; 4; 3; 3]
@@ -72,3 +95,7 @@ let test_is_tautology = is_tautology (Disj ((Var 'p'), (Neg (Var 'p'))))
 let test_is_tautology = is_tautology (Disj ((Var 'p'), (Neg (Var 'q'))))
 let test_is_tautology = is_tautology (Conj ((Var 'p'), (Neg (Var 'q'))))
 let test_nnf = nnf (Neg (Conj ((Var 'x'), Disj((Var 'y'), Neg(Conj ((Var 'z'), (Neg (Var 'y'))))))))
+let test_dnf = dnf (Neg (Conj ((Var 'x'), Disj((Var 'y'), Neg(Conj ((Var 'z'), (Neg (Var 'y'))))))))
+let test_cnf = cnf (Neg (Conj ((Var 'x'), Disj((Var 'y'), Neg(Conj ((Var 'z'), (Neg (Var 'y'))))))))
+let test_is_tautology_syntactically = is_tautology_syntactically (Disj ((Disj ((Var 'p'), (Neg (Var 'p')))), (Neg (Var 'p'))))
+let test_is_unsatisfiable_syntactically = is_unsatisfiable_syntactically (Conj ((Conj ((Var 'p'), (Var 'q'))), (Neg (Var 'p'))))
