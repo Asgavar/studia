@@ -5,4 +5,5 @@ let _ =
   let proofs = Parser.file Lexer.token lexbuf
   (* powyższe wiersze wczytują listę dowodów ze standardowego wejścia
      i parsują ją do postaci zdefiniowanej w module Syntax *)
-  in print_int (List.length proofs); print_newline ()
+  (* in print_int (List.length proofs); print_newline () *)
+  in List.map Syntax.print_proof_ok_info proofs
