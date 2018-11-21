@@ -8,5 +8,8 @@ eclimd.log
 workbench.xmi
 *.cmi
 *.cmo
+*.native
+*.byte
+_build/
 *.log
 *.cache
