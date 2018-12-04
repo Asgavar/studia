@@ -20,7 +20,7 @@ sig
 end
 
 
-module ParameterizedPQueue (OrdType : ORDTYPE) : PQUEUE =
+module ParameterizedPQueue (OrdType : ORDTYPE) =
 struct
   type priority = OrdType.t
   type 'a pqueue_entry = PQEntry of priority * 'a
@@ -48,24 +48,22 @@ struct
 end
 
 
-module IntOrdType : ORDTYPE =
+
+module IntOrdType =
 struct
   type t = int
   (* TODO: jak poradzic sobie bez tej redefinicji? *)
   type comparison = LT | EQ | GT
   let compare x y =
-    match (x, y) with
-      (x, y) when x < y -> LT
+    match (x, y) with (x, y) when x < y -> LT
     | (x, y) when x = y -> EQ
     | (x, y) when x > y -> GT
     | _ -> failwith ""
 end
 
 
-module IntPQueue = ParameterizedPQueue (IntOrdType)
-(* module II = (IntPQueue:PQUEUE with type priority = IntPQueue.priority) *)
-(* module II = (IntPQueue:PQUEUE with type t = int) *)
-(* module PP = (IntPQueue:PQUEUE with type priority = int) *)
+module IntPQueue__ = ParameterizedPQueue (IntOrdType)
+module IntPQueue = (IntPQueue__ : PQUEUE with type priority = int)
 
 
 let first_tuple_elem tuple =
