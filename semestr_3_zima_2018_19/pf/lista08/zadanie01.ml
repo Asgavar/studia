@@ -1,6 +1,6 @@
 module type PQUEUE =
 sig
-  type priority = int
+  type priority
   type 'a t
 
   exception EmptyPQueue
@@ -11,7 +11,7 @@ sig
 end
 
 
-module PQueue : PQUEUE =
+module PQueue : (PQUEUE with type priority = int) =
 struct
   type priority = int
   type 'a pqueue_entry = PQEntry of priority * 'a

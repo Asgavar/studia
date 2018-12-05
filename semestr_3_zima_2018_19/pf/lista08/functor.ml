@@ -20,7 +20,7 @@ sig
 end
 
 
-module ParameterizedPQueue (OrdType : ORDTYPE) =
+module ParameterizedPQueue (OrdType : ORDTYPE) : (PQUEUE with type priority = OrdType.t) =
 struct
   type priority = OrdType.t
   type 'a pqueue_entry = PQEntry of priority * 'a
@@ -48,8 +48,7 @@ struct
 end
 
 
-
-module IntOrdType =
+module IntOrdType : (ORDTYPE with type t = int) =
 struct
   type t = int
   (* TODO: jak poradzic sobie bez tej redefinicji? *)
@@ -62,8 +61,7 @@ struct
 end
 
 
-module IntPQueue__ = ParameterizedPQueue (IntOrdType)
-module IntPQueue = (IntPQueue__ : PQUEUE with type priority = int)
+module IntPQueue = ParameterizedPQueue (IntOrdType)
 
 
 let first_tuple_elem tuple =
@@ -90,10 +88,31 @@ let sort_with_pq (xs : int list) =
   let rec aux pq xs =
     match xs with
       [] -> list_of_pq pq
-    | hd :: tl -> aux (IntPQueue.insert pq hd hd ) tl in
+    | hd :: tl -> aux (IntPQueue.insert pq hd hd) tl in
   aux initial_pq xs
+
+let sort (type a) (module M : ORDTYPE with type t = a) (xs : a list) =
+  let module Q = ParameterizedPQueue (M) in
+
+  let list_of_pq pq =
+    let rec aux pq acc =
+      try let pq_tl = Q.remove pq
+        in aux (third_tuple_elem pq_tl) ((second_tuple_elem pq_tl) :: acc)
+      with Q.EmptyPQueue -> acc
+    in aux pq [] in
+
+  let initial_pq = Q.empty in
+  let rec aux pq xs =
+    match xs with
+      [] -> list_of_pq pq
+    | hd :: tl -> aux (Q.insert pq hd hd) tl
+  in aux initial_pq xs
 
 
 let test_sort_with_pq_1 = sort_with_pq [1; 2; 3; 4; 5; 6; 7]
 let test_sort_with_pq_2 = sort_with_pq [9; 8; 7; 6; 5; 4; 3; 2; 1]
 let test_sort_with_pq_1 = sort_with_pq [42; 8; -99; 41]
+
+let test_generic_1 = sort (module IntOrdType) [1; 2; 3; 9; 11]
+let test_generic_2 = sort (module IntOrdType) [9; 8; 7; 6; 5; 4; 3; 2; 1]
+let test_generic_3 = sort (module IntOrdType) [42; 8; -99; 41]
