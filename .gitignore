@@ -10,6 +10,8 @@ workbench.xmi
 *.cmo
 *.native
 *.byte
+*.hi
+*.o
 _build/
 *.log
 *.cache
