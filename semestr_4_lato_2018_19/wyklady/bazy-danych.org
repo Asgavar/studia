@@ -1,0 +1,24 @@
+* <2019-02-21 Thu>
+** ACID
+*** Atomic
+*** Consistent
+*** Independent/Isolated
+*** Durable
+** [[http://avid.cs.umass.edu/courses/691LL/f2006/papers/SH05.pdf][What Goes Around Comes Around]]
+** Algebra Relacji
+*** Operacje Unarne
+**** Rzut
+     π_nazwisko(Student) -> tylko kolumna z nazwiskami z tabeli Student
+**** Selekcja
+    σ_Adres='Koszalin'(Student) -> krotki ze studentami z Koszalina
+**** Przemianowanie
+    ρ_Osoba(id, nazwisko, miasto)(π_indeks,nazwisko,adres(Student)) -> zmiana nazwy relacji i atrybutów
+*** Operacje Teoriomnogościowe
+**** Suma/Różnica/Przekrój
+     Dokładnie tak samo jak w reszcie świata
+**** Iloczyn Kartezjański
+     Też, wszystko ze wszystkim
+**** Złączenie naturalne ><
+     Zmatchowanie na podstawie kolumn (atrybutów) o tych samych nazwach
+**** Złączenie i selekcja w jednym
+     R ><_F S = σ_F (R × S)
