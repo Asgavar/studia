@@ -1,0 +1,17 @@
+* Zadanie 2.
+równoważne z (X ∩ Y) ∪ (X ∩ Z)
+w środku trójki X.A × Y.Ay × Z.Az
+z nich wybieramy takie, że X.A = Y.Ay lub X.A = Z.Az
+i z powstałej w ten sposób 3-argumentowej relacji wycinamy X.A
+
+*Odpowiedź*: powinien użyć.
+
+* Zadanie 3.
+** a)
+   relację (bar, m) gdzie m to liczba soków podawanych w danym barze
+** b)
+   π_osoba,bar (σ_ile>=5 (ρ_BOI(bar, osoba, ile) (G_count__sok(bar, osoba) ((B >< P) >< L)))))
+** c)
+   G_min__cena_(osoba, sok) (B >< P)
+** d)
+   π_osoba,sok,bar (G_min__cena_(osoba, sok) (B >< P) >< (B >< P))
