@@ -1,0 +1,6 @@
+* Russian Peasant Multiplication
+  - liczby a, b
+  - a mnożymy przez 2, b dzielimy całkowicie przez 2
+  - lepiej kiedy b < a, bo całość wykonuje tyle kroków ile potrzeba dzieleć żeby b = 1
+** URLs
+   - http://mathforum.org/dr.math/faq/faq.peasant.html
