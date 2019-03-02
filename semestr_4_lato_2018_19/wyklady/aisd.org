@@ -1,3 +1,5 @@
+#+STARTUP: inlineimages showall
+
 * Russian Peasant Multiplication
   - liczby a, b
   - a mnożymy przez 2, b dzielimy całkowicie przez 2
@@ -8,18 +10,38 @@
   - http://mathforum.org/dr.math/faq/faq.peasant.html
 
 * Kopiec
+  - https://en.wikipedia.org/wiki/Heap_(data_structure)
+  - http://pages.cpsc.ucalgary.ca/~boyd/331/heaps.html
+  - https://medium.com/basecs/learning-to-love-heaps-cef2b273a238
   - klucze muszą pochodzić z uniwersum U uporządkowanego liniowo
   - tak naprawdę to drzewo binarne z paroma dodatkowymi cechami
+  - kompletne drzewo, tj każdy level jest zapełniony (ew. poza ostatnim) - np. 2 synów w binarnym
   - ∀ v klucz(v) < klucz(ojciec(v))
   - implementacja na przykład na zwykłej tablicy jednowymiarowej.
     wtedy element k[i] ma swoje potomstwo w elementach k[2i] oraz k[2i + 1]
+    #+ATTR_ORG: :width 500
+    [[./img/heap-as-array.png]]
 ** Operacje
+*** sift
+**** sift-up
+     - jeśli syn jest /większy/ od ojca => zamień ich miejscami.
+       przejdź do ojca.
+       jeśli nie, zakończ.
+**** sift-down
+     - jeśli syn jest /mniejszy/ od ojca => zamień ich miejscami i przejdź do ojca.
+       jeśli jest mniejszy od obu => wybierz większego z potomków (inaczej mniejsze dziecko też zaburzyłoby heap property)
+*** insert
+    - znajdujemy najniższy level możliwie z lewej strony z wolnym miejscem i wsadzamy nowy node.
+      jeśli heap property jest zachowany to spoko i kończymy, jeśli nie - zaczynamy sift-up
+*** usunięcie korzenia
+    - znajdujemy node na najniższym levelu z możliwie prawej strony i wsadzamy
+      na miejsce usuniętego wcześniej korzenia. zaczynamy sift-down
 *** zmiana wartości klucza
 **** dekrementacja
-     TODO
+     w minheapie może być konieczny sift-up, w maxheapie odwrotnie
 **** inkrementacja
-     TODO
-*** budowa kopca ze zbioru kluczy
+     analogicznie do ^, sift-down
+*** heapify - budowa kopca ze zbioru kluczy
 **** opcja naiwna
      wsadzamy każdy klucz po kolei i balansujemy w każdym kroku.
      wtedy złożoność to *O(nlogn)*, bo n kluczy i każdy balans zajmuje log(n) czasu.
