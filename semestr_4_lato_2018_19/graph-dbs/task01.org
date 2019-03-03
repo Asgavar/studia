@@ -1,0 +1,42 @@
+1. List Q-identifiers and (English) names of all Noble Prize winners that were born in Wrocław.
+   #+BEGIN_SRC
+   SELECT ?winner ?winnerLabel WHERE {
+     ?winner wdt:P166 [wdt:P31 wd:Q7191].
+     ?winner wdt:P19 wd:Q1799
+     SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE]". }
+   }
+   #+END_SRC
+   #+BEGIN_SRC json
+     [
+       {
+         "winner": "http://www.wikidata.org/entity/Q58978",
+         "winnerLabel": "Max Born"
+       },
+       {
+         "winner": "http://www.wikidata.org/entity/Q57075",
+         "winnerLabel": "Fritz Haber"
+       },
+       {
+         "winner": "http://www.wikidata.org/entity/Q76614",
+         "winnerLabel": "Friedrich Bergius"
+       },
+       {
+         "winner": "http://www.wikidata.org/entity/Q12830",
+         "winnerLabel": "Reinhard Selten"
+       }
+     ]
+   #+END_SRC
+
+2. Find all popes with a child that was a pope too. Give the identifier,
+   the  label in English and the date of birth of each of them.
+
+
+3. Find occupations (P106) practised by persons with a given name Konstanty.
+   Return pairs (occupation, the number of persons practising the occupation),
+   Sort the results in the descending order by this number, and limit the number of results to 10.
+4. Find all things that have been named after (P138) any president of Poland (Q1054799).
+   For each such thing return this thing (e.g.,  [[http://www.wikidata.org/entity/Q315658][wd:Q315658]]), 
+   its label in Polish (e.g., Uniwersytet Wrocławski) and the name of the president (e.g., Bolesław Bierut).
+5. List all persons that were born in Poland and died at a place at the elevation above 8000 metres above sea level 
+   (be careful with units! look at the [[https://en.wikibooks.org/wiki/SPARQL/WIKIDATA_Precision,_Units_and_Coordinates#Quantities][example]]).
+6. Ask some interesting query of your choice.
