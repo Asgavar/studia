@@ -51,6 +51,8 @@
 
 * Heapsort
   *Θ(nlogn)*
+  - formujemy odpowiedni kopiec z tablicy na wejściu - min lub max (*Θ(n)*)
+  - wyciągamy najmniejszy/największy element (*Θ(logn)*) i tak *n* razy
 
 * Priority Queue
 ** Operacje
