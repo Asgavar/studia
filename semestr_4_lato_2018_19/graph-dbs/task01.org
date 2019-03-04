@@ -212,4 +212,189 @@
 
 5. List all persons that were born in Poland and died at a place at the elevation above 8000 metres above sea level 
    (be careful with units! look at the [[https://en.wikibooks.org/wiki/SPARQL/WIKIDATA_Precision,_Units_and_Coordinates#Quantities][example]]).
+
+   #+BEGIN_SRC
+    SELECT ?corpse ?corpseLabel ?placeOfDeath ?placeOfDeathLabel ?deathValue WHERE {
+      ?corpse wdt:P27 wd:Q36.
+      ?corpse wdt:P20 ?placeOfDeath.
+      ?placeOfDeath p:P2044 ?deathHeightStmt.
+      ?deathHeightStmt psn:P2044 ?deathHeight.
+      ?deathHeight wikibase:quantityUnit ?deathUnit.
+      ?deathHeight wikibase:quantityAmount ?deathValue.
+      FILTER(?deathValue >= 8000 && ?deathUnit = wd:Q11573).
+      # hipotetycznie FILTER ze stopami(?)
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+    }
+   #+END_SRC
+   #+BEGIN_SRC json
+     [
+       {
+         "corpse": "http://www.wikidata.org/entity/Q514983",
+         "corpseLabel": "Zygmunt Andrzej Heinrich",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q513",
+         "placeOfDeathLabel": "Mount Everest",
+         "deathValue": "8848"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q514983",
+         "corpseLabel": "Zygmunt Andrzej Heinrich",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q513",
+         "placeOfDeathLabel": "Mount Everest",
+         "deathValue": "8844.43"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q490335",
+         "corpseLabel": "Piotr Morawski",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q165440",
+         "placeOfDeathLabel": "Dhaulagiri",
+         "deathValue": "8167"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q237493",
+         "corpseLabel": "Wanda Rutkiewicz",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q82019",
+         "placeOfDeathLabel": "Kanchenjunga",
+         "deathValue": "8586"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q737035",
+         "corpseLabel": "Dobrosława Miodowicz-Wolf",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q43512",
+         "placeOfDeathLabel": "K2",
+         "deathValue": "8611"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q312401",
+         "corpseLabel": "Jerzy Kukuczka",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q168702",
+         "placeOfDeathLabel": "Lhotse",
+         "deathValue": "8516"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q3491645",
+         "corpseLabel": "Maciej Berbeka",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q180996",
+         "placeOfDeathLabel": "Broad Peak",
+         "deathValue": "8051"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q3491970",
+         "corpseLabel": "Artur Hajzer",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q187138",
+         "placeOfDeathLabel": "Gasherbrum",
+         "deathValue": "8080"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q3492042",
+         "corpseLabel": "Andrzej Czok",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q82019",
+         "placeOfDeathLabel": "Kanchenjunga",
+         "deathValue": "8586"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q5478112",
+         "corpseLabel": "Tadeusz Piotrowski",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q43512",
+         "placeOfDeathLabel": "K2",
+         "deathValue": "8611"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q9359438",
+         "corpseLabel": "Tomasz Kowalski",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q180996",
+         "placeOfDeathLabel": "Broad Peak",
+         "deathValue": "8051"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q9354504",
+         "corpseLabel": "Tadeusz Kudelski",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q513",
+         "placeOfDeathLabel": "Mount Everest",
+         "deathValue": "8848"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q9354504",
+         "corpseLabel": "Tadeusz Kudelski",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q513",
+         "placeOfDeathLabel": "Mount Everest",
+         "deathValue": "8844.43"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q20829570",
+         "corpseLabel": "Aleksander Ostrowski",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q186853",
+         "placeOfDeathLabel": "Gasherbrum II",
+         "deathValue": "8034"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q23943568",
+         "corpseLabel": "Rafał Chołda",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q168702",
+         "placeOfDeathLabel": "Lhotse",
+         "deathValue": "8516"
+       },
+       {
+         "corpse": "http://www.wikidata.org/entity/Q47504713",
+         "corpseLabel": "Tomasz Mackiewicz",
+         "placeOfDeath": "http://www.wikidata.org/entity/Q130736",
+         "placeOfDeathLabel": "Nanga Parbat",
+         "deathValue": "8126"
+       }
+     ]
+   #+END_SRC
+
 6. Ask some interesting query of your choice.
+
+   #+BEGIN_SRC
+     SELECT ?manner ?mannerLabel (COUNT(?manner) AS ?count) WHERE {
+      {
+        ?human wdt:P509 [wdt:P279 wd:Q3505252].
+        ?human wdt:P1196 ?manner.
+      }
+      UNION
+      {
+        ?human wdt:P509 wd:Q3505252.
+        ?human wdt:P1196 ?manner.
+      }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+    } GROUP BY ?manner ?mannerLabel
+   #+END_SRC
+   #+BEGIN_SRC json
+     [
+       {
+         "manner": "http://www.wikidata.org/entity/Q10737",
+         "mannerLabel": "suicide",
+         "count": "144"
+       },
+       {
+         "manner": "http://www.wikidata.org/entity/Q171558",
+         "mannerLabel": "accident",
+         "count": "41"
+       },
+       {
+         "manner": "http://www.wikidata.org/entity/Q3739104",
+         "mannerLabel": "natural causes",
+         "count": "6"
+       },
+       {
+         "manner": "http://www.wikidata.org/entity/Q4317891",
+         "mannerLabel": "accident",
+         "count": "3"
+       },
+       {
+         "manner": "http://www.wikidata.org/entity/Q15729048",
+         "mannerLabel": "pending investigation",
+         "count": "1"
+       },
+       {
+         "manner": "http://www.wikidata.org/entity/Q149086",
+         "mannerLabel": "homicide",
+         "count": "1"
+       },
+       {
+         "manner": "http://www.wikidata.org/entity/Q855919",
+         "mannerLabel": "unnatural death",
+         "count": "1"
+       }
+     ]
+   #+END_SRC
