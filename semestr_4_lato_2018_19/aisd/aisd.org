@@ -45,9 +45,15 @@
 **** opcja naiwna
      wsadzamy każdy klucz po kolei i balansujemy w każdym kroku.
      wtedy złożoność to *O(nlogn)*, bo n kluczy i każdy balans zajmuje log(n) czasu.
-**** opcja lepsza
-     zaczynamy od liści (końca tablicy) i balansujemy każdy klucz z hipotetycznym ojcem.
-     wtedy *O(n)*.
+**** opcja lepsza (aka Floyda)
+     https://www.youtube.com/watch?v=MiyLo8adrWw
+     budujemy kopce od dołu, zaczynając od liści i w każdym kroku tworząc kopce wyższe o jeden level.
+     zaczynamy od przedostatniego poziomu (środka tablicy) i (być może) zamieniamy każdego hipotetycznego
+     rodzica z jego większym (jeśli to max heap) dzieckiem.
+     czas będzie liniowy dzięki lematowi:
+     /~n/(2^k+1) wierzchołków znajduje się na wysokości k/
+     *Σ(k * n/(2^k+1)*
+     czyli *O(n)*.
 
 * Heapsort
   *Θ(nlogn)*
@@ -60,7 +66,8 @@
 *** delete-max
 *** insert-node
 
-* Podwójna PQ
+* Min-Max Binary Heap
+  - https://en.wikipedia.org/wiki/Min-max_heap
   - dwa kopce H, L połączone liścmi
   - H ma sufit(n/2) elementów, L podłoga(n/2)
   - H ma max w korzeniu, L ma min w korzeniu
