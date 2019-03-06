@@ -78,6 +78,19 @@ connection(M1, M2) :-
     directly(M1, M3),
     connection(M3, M2).
 
+with_one(M1, M2) :-
+    directly(M1, M3),
+    directly(M3, M2).
+
+with_max_two(M1, M2) :-
+    directly(M1, M2).
+with_max_two(M1, M2) :-
+    with_one(M1, M2).
+with_max_two(M1, M2) :-
+    directly(M1, M3),
+    with_one(M3, M2).
+
+
 % zadanie 4.
 append([], X, X).
 append([H|T], X, [H|Y]) :-
@@ -89,7 +102,7 @@ select(X, [H|T], [H|S]) :-
     select(X, T, S).
 
 % zadanie 6.
-%% append(X, Y, Z), append(X, X, Y).
+%% append(X, Y, _), append(X, X, Y).
 %% select(Removed, [a,b,c,d], [a,c,d]).
 %% append([a,b,c], X, [a,b,c,d,e]).
 
