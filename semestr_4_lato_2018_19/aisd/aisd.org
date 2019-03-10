@@ -114,3 +114,23 @@
       - *Pi* - czas potrzebny na obsłużenie osoby /i/
       - *Ci* - wskaźnik niecierpliwości osoby /i/
       - rozwiązanie: sortujemy petentów po *Pi/Ci*
+
+* Algorytmy 'dziel i zwyciężaj'
+  - jeśli *n* jest trywialnie małe => po prostu rozwiąż problem
+  - jak nie to:
+    - podziel na /mniejsze/ podproblemy
+    - rekursywnie rozwiąż każdy z nich
+    - w jakiś sposób połącz te rozwiązania
+  - examples
+    - *Merge Sort*
+    - *Quick Sort*
+    - *Binary Search*
+    - mamy tablicę o N elementach i:
+      - /liderem/ nazywamy taki element, który występuje więcej niż *N/2* razy
+      - jak znaleźć czy i jaki lider istnieje?
+        - ciachamy tablicę na dwie części
+        - szukamy lidera z lewej i z prawej
+        - jak w którejkolwiek z nich nie ma lidera to elo, w całej tablicy też nie będzie
+        - jeśli jest, to sprawdzmy, czy któryś z nich jest liderem w /całej/ tablicy
+      - czas *Θ(nlogn)*
+      - pamięć *Θ(logn)*
