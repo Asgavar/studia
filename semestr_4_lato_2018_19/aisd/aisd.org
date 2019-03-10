@@ -77,3 +77,40 @@
 *** delete-min
 *** delete-max
 *** insert-node
+
+* Sortowanie Topologiczne (znajdowanie porządku)
+  - https://en.wikipedia.org/wiki/Topological_sorting
+  - DAG
+  - taki układ, że strzałki krawędzi idą zawsze w prawo
+  - przykład: planowanie kolejności zadań do wykonania albo plików do kompilacji
+    (przy uwzględnieniu zależności między nimi)
+** Algorytm Kahna
+   - obserwacja: każdy DAG ma wierzchołek o /indeg/ = 0
+   - bierzemy taki wierzchołek (jeśli jest ich więcej to dowolny spośród nich)
+   - wkładamy se na listę wynikową
+   - patrzymy na wszystkich sąsiadów tego wierzchołka i zapisujemy, że ich /indeg/i
+     właśnie zmniejszyły się o jeden
+   - jeśli któryś z /indeg/ów sąsiadów spadł do zera to robimy z nim to samo
+   - w każdym kroku będzie jakiś vertex o indeg = 0, bo DAG po wyjęciu wierzchołka
+     dalej jest DAGiem
+   - złożoność:
+     - czas *O(n + m)*
+     - pamięciowa *O(n)*
+
+* Algorytmy zachłanne
+  - tl;dr robimy coś co w danej chwili wydaje się najbardziej opłacalne
+    i lecimy dalej
+  - zazwyczaj najłatwiejsze do wymyślenia
+  - dowody poprawności są schematyczne
+  - najczęściej nie znajdują optymalnego rozwiązania xD
+    ale czasem aproksymują
+  - *Lemat o optymalnej podstrukturze*
+  - examples
+    - wydawanie reszty
+      - wydajemy największą monetę której wartość nie przekracza reszty do wydania
+      - i tak w kółko aż wydamy co do grosza
+    - problem pani z dziekanatu xD
+      - *N* - liczba osób
+      - *Pi* - czas potrzebny na obsłużenie osoby /i/
+      - *Ci* - wskaźnik niecierpliwości osoby /i/
+      - rozwiązanie: sortujemy petentów po *Pi/Ci*
