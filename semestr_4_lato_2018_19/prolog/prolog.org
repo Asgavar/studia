@@ -1,0 +1,10 @@
+- Prolog nie wykonuje occur checków
+- cele
+  - generujące
+  - sprawdzające
+- tryby argumentów
+  - *+*
+  - *++*
+  - *-*
+  - *--*
+  - *?*
