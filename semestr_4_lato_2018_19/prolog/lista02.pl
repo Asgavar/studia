@@ -30,32 +30,33 @@ sublist(X, [_|T]) :-
 
 % zadanie 3.
 iperm([], []).
-iperm(X, [H|T]) :-
-    iperm(Z, T),
-    select(H, X, Z).
+iperm([Xh|Xt], P) :-
+    iperm(Xt, Z),
+    select(Xh, P, Z).
 
 sperm([], []).
-sperm([Xh|Xt], P) :-
-    select(Xh, P, Z),
-    sperm(Xt, Z).
+sperm(X, [H|T]) :-
+    select(H, X, Z),
+    sperm(Z, T).
 
 % zadanie 4.
 monotone([]).
 monotone([_]).
-monotone([A,B|T]) :-
-    @=<(A, B),
+monotone([H|T]) :-
+    [H] @=< T,
     monotone(T).
 
+lessthan(_, []).
+lessthan(X, Y) :-
+    X @=< Y.
+
 newiperm([], []).
-newiperm(X, [H|T]) :-
-    iperm(Z, T),
-    select(H, X, Z).
+newiperm([Xh|Xt], P) :-
+    newiperm(Xt, Z),
+    monotone([Xh|Z]).
 
 newsperm([], []).
-newsperm([Xh|Xt], P) :-
-    select(Xh, P, Z),
-    sperm(Xt, Z).
-
-newsort(X, Y) :-
-    iperm(X, Y),
-    monotone(Y).
+newsperm(X, [H|T]) :-
+    select(H, X, Z),
+    sperm(Z, T),
+    monotone([H|T]).
