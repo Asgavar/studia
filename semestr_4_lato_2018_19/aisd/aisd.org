@@ -134,3 +134,27 @@
         - jeśli jest, to sprawdzmy, czy któryś z nich jest liderem w /całej/ tablicy
       - czas *Θ(nlogn)*
       - pamięć *Θ(logn)*
+
+* Problem wyboru zadań aka odcinków na OX
+  - konkretniej tak, żeby było ich jak najwięcej
+  - sortujemy według współrzędnej/czasu końca (odcinka lub zadania) -> *O(nlogn)*
+  - w każdym kroku wybieramy pierwsze, które zaczyna się po końcu ostatniego -> *Θ(n)*
+  - razem *O/Θ(nlogn)* (zależy od algorytmu który sortuje)
+
+* Greedy algorithm for Egyptian fractions
+  - dostajemy liczbę a/b (ułamek zwykły)
+  - chcemy zapisać ją jako 1/c + 1/d + ...
+  - rozwiązanie zachłanne
+    - bierzemy 1 / sufit z (b*a)
+      - TODO
+  - https://en.wikipedia.org/wiki/Greedy_algorithm_for_Egyptian_fractions
+  - https://www.geeksforgeeks.org/greedy-algorithm-egyptian-fraction/
+
+* Minimal Spanning Trees
+  - drzewo o jak najmniejszej wadze, w którym wszystkie wierzchołki są osiągalne
+** Cycle Property
+   - bierzemy krawędź /e/. jeśli /e/ jest najcięższa na jakimś cyklu, 
+     to nie może być częścią żadnego MST - w przeciwnym wypadku dałoby się trywialnie
+     podmienić ją na jakąś lżejszą.
+** Cut Property
+   - TODO
