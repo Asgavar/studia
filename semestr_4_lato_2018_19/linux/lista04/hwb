@@ -1,6 +1,6 @@
 # -*- sh -*-
 
-opts=$(getopt --options cg:hvw --long color:,greeting:,help,version,world -- $@)
+opts=$(getopt --options cg:hvw --long color:,greeting:,capitalize,help,version,world -- $@)
 
 eval set -- $opts
 
