@@ -1,0 +1,99 @@
+* Zadanie 1.
+  Wszystkie te narzędzia są częscią ~GNU coreutils~.
+
+** ls(1)
+   listujezenia i rozmiary
+
+** stat(1)
+   informuje o /statusie/ konkretnego pliku lub systemu plików.
+   bardziej low-levelowy niż *ls*, przykład:
+
+   o systemie plików:
+   #+BEGIN_SRC
+   ^^>>> stat -f /                                                                                                                                                                   /home/asgavar
+   File: "/"
+   ID: 4edc8e8d591338f1 Namelen: 255     Type: btrfs
+   Block size: 4096       Fundamental block size: 4096
+   Blocks: Total: 32261782   Free: 8336331    Available: 7787137
+   Inodes: Total: 0          Free: 0
+   #+END_SRC
+
+   o pliku:
+   #+BEGIN_SRC
+   ^^>>> stat /                                                                                                                                                                      /home/asgavar
+   File: /
+   Size: 122       	Blocks: 32         IO Block: 4096   directory
+   Device: 19h/25d	Inode: 256         Links: 1
+   Access: (0755/drwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
+   Access: 2019-03-15 21:08:54.440004648 +0100
+   Modify: 2018-12-30 14:31:38.473487648 +0100
+   Change: 2018-12-30 14:31:38.473487648 +0100
+   Birth: 2018-11-04 15:46:10.000000000 +0100
+   #+END_SRC
+
+** realpath(1)
+   wyświetla ścieżkę absolutną do wybranego pliku bądź relatywną względem
+   jakiegoś innego
+
+** readlink(1)
+   rozwiązuje ścieżki, na które wskazują linki symboliczne.
+   przykład w porównaniu ze *stat*em:
+
+   #+BEGIN_SRC
+   ^^>>> stat .gitconfig                                                         /home/asgavar
+   File: .gitconfig -> dotfiles/git/.gitconfig
+   Size: 23        	Blocks: 8          IO Block: 4096   symbolic link
+   Device: 19h/25d	Inode: 120708      Links: 1
+   Access: (0777/lrwxrwxrwx)  Uid: ( 1000/ asgavar)   Gid: ( 1000/ asgavar)
+   Access: 2019-03-15 21:11:36.030008314 +0100
+   Modify: 2018-11-04 20:10:52.493383441 +0100
+   Change: 2018-11-04 20:10:52.493383441 +0100
+   Birth: 2018-11-04 20:10:52.493383441 +0100
+   #+END_SRC
+
+   #+BEGIN_SRC
+   ^^>>> readlink .gitconfig                                                     /home/asgavar
+   dotfiles/git/.gitconfig
+   #+END_SRC
+
+* Zadanie 3.
+** lsof(8)
+
+** fuser(1)
+
+** Jak ujawnić wszystkie pliki otwarte przez podany proces?
+   ~lsof -p $(pidof NAZWAPROCESU)~
+
+** Jak sprawdzić, który proces otworzył dany plik?
+   ~fuser NAZWAPLIKU~
+
+** Jak ujawnić wszystkie pliki otwarte przez podanego użytkownika?
+   ~lsof -u NAZWAUSERA~
+
+* Zadanie 4.
+** zajrzenie co dzieje się pod maską programu
+   ~strace python -c "print('xD')"~
+** śledzenie wywołań konkretnego syscalla
+   ~strace -e trace=openat ls~
+   fun fact: nie wywołuje ~open()~ ani razu
+** podpięcie się do już chodzącego procesu
+   #+BEGIN_SRC
+   pidof opera
+   sudo strace -p <numer któregoś z procesów>
+   #+END_SRC
+** statsy nt czasu, wywołań i błędów przy syscallach
+   ~strace -c ls~
+** misc
+   - *-t* dodaje timestampy
+   - *-r* analogicznie, ale relatywne
+   - *-o* output do pliku
+
+* Zadanie 10.
+  - https://gitlab.freedesktop.org/dbus/dbus
+  - https://dbus.freedesktop.org/doc/dbus-tutorial.html
+  - DEMO: ~helm-spotify~ i API Spotify'a
+  - z czego się składa?
+    - obiekty, np. ~/org/kde/kspread/sheets/3/cells/4/5~
+    - metody, wywoływane na obiektach
+    - sygnały
+    - interfejsy
