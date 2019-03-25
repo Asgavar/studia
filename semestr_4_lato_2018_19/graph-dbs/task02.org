@@ -1,0 +1,282 @@
+* 1. List 10 locations that have been mentioned by the largest number of trolls.
+
+  ~match (troll:Troll) -[:POSTED] -> (:Tweet) -[:CONTAINS_ENTITY] -> (loc:Location)
+     with count(troll) as talkedAbout, loc order by talkedAbout desc return loc, talkedAbout limit 10~
+
+  ╒════════════════════╤═════════════╕
+  │"loc"               │"talkedAbout"│
+  ╞════════════════════╪═════════════╡
+  │{"name":"America "} │1343         │
+  ├────────────────────┼─────────────┤
+  │{"name":"Russia "}  │879          │
+  ├────────────────────┼─────────────┤
+  │{"name":"Benghazi "}│471          │
+  ├────────────────────┼─────────────┤
+  │{"name":"Iran "}    │428          │
+  ├────────────────────┼─────────────┤
+  │{"name":"Florida "} │409          │
+  ├────────────────────┼─────────────┤
+  │{"name":"Brussels "}│397          │
+  ├────────────────────┼─────────────┤
+  │{"name":"Syria "}   │372          │
+  ├────────────────────┼─────────────┤
+  │{"name":"Israel "}  │324          │
+  ├────────────────────┼─────────────┤
+  │{"name":"Mexico "}  │314          │
+  ├────────────────────┼─────────────┤
+  │{"name":"Ohio "}    │300          │
+  └────────────────────┴─────────────┘
+
+* 2. List 10 trolls that have been mentioned by the largest number of tweets.
+
+  ~match (tweet:Tweet) -[:MENTIONS] -> (troll:Troll)
+    with count(tweet) as tweetCount, troll order by tweetCount desc return tweetCount, troll limit 10~
+
+    ╒════════════╤══════════════════════════════════════════════════════════════════════╕
+    │"tweetCount"│"troll"                                                               │
+    ╞════════════╪══════════════════════════════════════════════════════════════════════╡
+    │112         │{"friends_count":10011,"listed_count":255,"favourites_count":12132,"ve│
+    │            │rified":"false","created_at":"Tue Aug 11 07:22:47 +0000 2015","descrip│
+    │            │tion":"No black person is ugly 
+    #BRONZE #BlackLivesMatter #BlackToLive│
+    │            │","time_zone":"Pacific Time (US & Canada)","screen_name":"gloed_up","s│
+    │            │tatuses_count":28695,"followers_count":19314,"name":"1-800-WOKE-AF","l│
+    │            │ocation":"StLouis","id":3312143142,"lang":"en"}                       │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │100         │{"friends_count":21908,"listed_count":97,"favourites_count":928,"verif│
+    │            │ied":"false","created_at":"Fri Oct 23 11:07:56 +0000 2015","descriptio│
+    │            │n":"","time_zone":"Pacific Time (US & Canada)","screen_name":"tpartyne│
+    │            │ws","statuses_count":1649,"followers_count":19976,"name":"Tea Party Ne│
+    │            │ws","location":"","id":3990577513,"lang":"en"}                        │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │16          │{"friends_count":7930,"listed_count":32,"favourites_count":46,"verifie│
+    │            │d":"false","created_at":"Sat Nov 28 21:53:33 +0000 2015","description"│
+    │            │:"Conservative; Politically incorrect; Christian. Proud American; The │
+    │            │only Left we have is Regressive Left","time_zone":"Pacific Time (US & │
+    │            │Canada)","screen_name":"rightnpr","statuses_count":791,"followers_coun│
+    │            │t":9297,"name":"Right and Proud","location":"","id":4311371968,"lang":│
+    │            │"en"}                                                                 │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │4           │{"friends_count":14414,"listed_count":144,"favourites_count":2830,"ver│
+    │            │ified":"false","created_at":"Thu Oct 22 08:38:41 +0000 2015","descript│
+    │            │ion":"Fast-growing black community. Latest news and everyday updates, │
+    │            │opinions on today’s racial justice issues.#BlackMattersUS #BLM","time_│
+    │            │zone":"Pacific Time (US & Canada)","screen_name":"blackmattersus","sta│
+    │            │tuses_count":3252,"followers_count":15026,"name":"BlackMatters","locat│
+    │            │ion":"","id":3978316814,"lang":"en"}                                  │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │3           │{"friends_count":3240,"listed_count":24,"favourites_count":3359,"verif│
+    │            │ied":"false","created_at":"Thu Jul 03 15:01:56 +0000 2014","descriptio│
+    │            │n":"","time_zone":"Eastern Time (US & Canada)","screen_name":"brightan│
+    │            │dglory","statuses_count":3935,"followers_count":3080,"name":"Bob Hodge│
+    │            │s","location":"USA","id":2668171329,"lang":"en"}                      │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │2           │{"friends_count":6100,"listed_count":273,"favourites_count":93,"verifi│
+    │            │ed":"false","created_at":"Thu Oct 08 12:27:46 +0000 2015","description│
+    │            │":"News about war in #Syria & #ISIS","time_zone":"London","screen_name│
+    │            │":"todayinsyria","statuses_count":10162,"followers_count":26430,"name"│
+    │            │:"Syria Today","location":"","id":3899481526,"lang":"en"}             │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │2           │{"friends_count":2159,"listed_count":72,"favourites_count":8748,"verif│
+    │            │ied":"false","created_at":"Wed Aug 14 19:07:30 +0000 2013","descriptio│
+    │            │n":"~Reagan Conservative ~Jesus Lover ~PRO-Israel ~PRO-2A ~PRO-Life ~P│
+    │            │RO-Constitution ~Support Police & Military #RenewUS #PJNET #TCOT #Cruz│
+    │            │Crew #WakeUpAmerica","time_zone":"Eastern Time (US & Canada)","screen_│
+    │            │name":"hyddrox","statuses_count":10242,"followers_count":2225,"name":"│
+    │            │Susan","location":"USA","id":1671234620,"lang":"en"}                  │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │2           │{"friends_count":1548,"listed_count":17,"favourites_count":1405,"verif│
+    │            │ied":"false","created_at":"Sat May 31 00:27:24 +0000 2014","descriptio│
+    │            │n":"You know you're in love when you can't fall asleep because reality│
+    │            │ is finally better than your dreams","time_zone":"Eastern Time (US & C│
+    │            │anada)","screen_name":"dannythehappies","statuses_count":2191,"followe│
+    │            │rs_count":1857,"name":"Danny","location":"Atlanta, Georgia","id":25361│
+    │            │46374,"lang":"en"}                                                    │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │1           │{"friends_count":1676,"listed_count":10,"favourites_count":1011,"verif│
+    │            │ied":"false","created_at":"Mon Jun 02 06:34:52 +0000 2014","descriptio│
+    │            │n":"Guardian of the Animals, Conservative, DIY'er, ninja #tcot","time_│
+    │            │zone":"Eastern Time (US & Canada)","screen_name":"heyits_toby","status│
+    │            │es_count":1396,"followers_count":1424,"name":"Toby Kress","location":"│
+    │            │US","id":2540882036,"lang":"en"}                                      │
+    ├────────────┼──────────────────────────────────────────────────────────────────────┤
+    │1           │{"friends_count":2134,"listed_count":34,"favourites_count":2768,"verif│
+    │            │ied":"false","created_at":"Mon Jun 02 02:03:39 +0000 2014","descriptio│
+    │            │n":"Addicted to #hashtag #games","time_zone":"Eastern Time (US & Canad│
+    │            │a)","screen_name":"holycrapchrix","statuses_count":4237,"followers_cou│
+    │            │nt":2456,"name":"Chris","location":"Atlanta, GA","id":2540596597,"lang│
+    │            │":"en"}                                                               │
+    └────────────┴──────────────────────────────────────────────────────────────────────┘
+
+* 3. List 10 trolls that have been mentioned by the largest number of users.
+  
+  ~match (user:User) -[:POSTED] -> (:Tweet) -[:MENTIONS] -> (troll:Troll) 
+    with count(distinct user) as userCount, troll order by userCount desc return userCount, troll~
+
+  ╒═══════════╤══════════════════════════════════════════════════════════════════════╕
+  │"userCount"│"troll"                                                               │
+  ╞═══════════╪══════════════════════════════════════════════════════════════════════╡
+  │10         │{"friends_count":21908,"listed_count":97,"favourites_count":928,"verif│
+  │           │ied":"false","created_at":"Fri Oct 23 11:07:56 +0000 2015","descriptio│
+  │           │n":"","time_zone":"Pacific Time (US & Canada)","screen_name":"tpartyne│
+  │           │ws","statuses_count":1649,"followers_count":19976,"name":"Tea Party Ne│
+  │           │ws","location":"","id":3990577513,"lang":"en"}                        │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │4          │{"friends_count":10011,"listed_count":255,"favourites_count":12132,"ve│
+  │           │rified":"false","created_at":"Tue Aug 11 07:22:47 +0000 2015","descrip│
+  │           │tion":"No black person is ugly 
+  #BRONZE #BlackLivesMatter #BlackToLive│
+  │           │","time_zone":"Pacific Time (US & Canada)","screen_name":"gloed_up","s│
+  │           │tatuses_count":28695,"followers_count":19314,"name":"1-800-WOKE-AF","l│
+  │           │ocation":"StLouis","id":3312143142,"lang":"en"}                       │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │4          │{"friends_count":14414,"listed_count":144,"favourites_count":2830,"ver│
+  │           │ified":"false","created_at":"Thu Oct 22 08:38:41 +0000 2015","descript│
+  │           │ion":"Fast-growing black community. Latest news and everyday updates, │
+  │           │opinions on today’s racial justice issues.#BlackMattersUS #BLM","time_│
+  │           │zone":"Pacific Time (US & Canada)","screen_name":"blackmattersus","sta│
+  │           │tuses_count":3252,"followers_count":15026,"name":"BlackMatters","locat│
+  │           │ion":"","id":3978316814,"lang":"en"}                                  │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │4          │{"friends_count":7930,"listed_count":32,"favourites_count":46,"verifie│
+  │           │d":"false","created_at":"Sat Nov 28 21:53:33 +0000 2015","description"│
+  │           │:"Conservative; Politically incorrect; Christian. Proud American; The │
+  │           │only Left we have is Regressive Left","time_zone":"Pacific Time (US & │
+  │           │Canada)","screen_name":"rightnpr","statuses_count":791,"followers_coun│
+  │           │t":9297,"name":"Right and Proud","location":"","id":4311371968,"lang":│
+  │           │"en"}                                                                 │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │3          │{"friends_count":3240,"listed_count":24,"favourites_count":3359,"verif│
+  │           │ied":"false","created_at":"Thu Jul 03 15:01:56 +0000 2014","descriptio│
+  │           │n":"","time_zone":"Eastern Time (US & Canada)","screen_name":"brightan│
+  │           │dglory","statuses_count":3935,"followers_count":3080,"name":"Bob Hodge│
+  │           │s","location":"USA","id":2668171329,"lang":"en"}                      │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │2          │{"friends_count":1548,"listed_count":17,"favourites_count":1405,"verif│
+  │           │ied":"false","created_at":"Sat May 31 00:27:24 +0000 2014","descriptio│
+  │           │n":"You know you're in love when you can't fall asleep because reality│
+  │           │ is finally better than your dreams","time_zone":"Eastern Time (US & C│
+  │           │anada)","screen_name":"dannythehappies","statuses_count":2191,"followe│
+  │           │rs_count":1857,"name":"Danny","location":"Atlanta, Georgia","id":25361│
+  │           │46374,"lang":"en"}                                                    │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │1          │{"friends_count":2159,"listed_count":72,"favourites_count":8748,"verif│
+  │           │ied":"false","created_at":"Wed Aug 14 19:07:30 +0000 2013","descriptio│
+  │           │n":"~Reagan Conservative ~Jesus Lover ~PRO-Israel ~PRO-2A ~PRO-Life ~P│
+  │           │RO-Constitution ~Support Police & Military #RenewUS #PJNET #TCOT #Cruz│
+  │           │Crew #WakeUpAmerica","time_zone":"Eastern Time (US & Canada)","screen_│
+  │           │name":"hyddrox","statuses_count":10242,"followers_count":2225,"name":"│
+  │           │Susan","location":"USA","id":1671234620,"lang":"en"}                  │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │1          │{"friends_count":2134,"listed_count":34,"favourites_count":2768,"verif│
+  │           │ied":"false","created_at":"Mon Jun 02 02:03:39 +0000 2014","descriptio│
+  │           │n":"Addicted to #hashtag #games","time_zone":"Eastern Time (US & Canad│
+  │           │a)","screen_name":"holycrapchrix","statuses_count":4237,"followers_cou│
+  │           │nt":2456,"name":"Chris","location":"Atlanta, GA","id":2540596597,"lang│
+  │           │":"en"}                                                               │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │1          │{"friends_count":1676,"listed_count":10,"favourites_count":1011,"verif│
+  │           │ied":"false","created_at":"Mon Jun 02 06:34:52 +0000 2014","descriptio│
+  │           │n":"Guardian of the Animals, Conservative, DIY'er, ninja #tcot","time_│
+  │           │zone":"Eastern Time (US & Canada)","screen_name":"heyits_toby","status│
+  │           │es_count":1396,"followers_count":1424,"name":"Toby Kress","location":"│
+  │           │US","id":2540882036,"lang":"en"}                                      │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │1          │{"friends_count":6100,"listed_count":273,"favourites_count":93,"verifi│
+  │           │ed":"false","created_at":"Thu Oct 08 12:27:46 +0000 2015","description│
+  │           │":"News about war in #Syria & #ISIS","time_zone":"London","screen_name│
+  │           │":"todayinsyria","statuses_count":10162,"followers_count":26430,"name"│
+  │           │:"Syria Today","location":"","id":3899481526,"lang":"en"}             │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │1          │{"friends_count":9265,"listed_count":58,"favourites_count":2011,"verif│
+  │           │ied":"false","created_at":"Wed Oct 21 13:27:31 +0000 2015","descriptio│
+  │           │n":"Being patriotic means love or devotion to your homeland and readin│
+  │           │ess to defend it from any harm. United we stand, divided we fall.Conse│
+  │           │rvative politics. #PJNet","time_zone":"Eastern Time (US & Canada)","sc│
+  │           │reen_name":"patriototus","statuses_count":1706,"followers_count":11811│
+  │           │,"name":"Being Patriotic","location":"Texas, USA","id":3969530725,"lan│
+  │           │g":"en"}                                                              │
+  ├───────────┼──────────────────────────────────────────────────────────────────────┤
+  │1          │{"friends_count":4845,"listed_count":45,"favourites_count":2986,"verif│
+  │           │ied":"false","created_at":"Fri Apr 22 08:55:14 +0000 2016","descriptio│
+  │           │n":"Keiner kann uns verbieten, uns so zu äußern, wie wir es wollen! Wi│
+  │           │r sind für die Meinungsfreiheit!","time_zone":"Berlin","screen_name":"│
+  │           │erdollum","statuses_count":2556,"followers_count":5811,"name":"Erdollu│
+  │           │m","location":"","id":723434980177633280,"lang":"de"}                 │
+  └───────────┴──────────────────────────────────────────────────────────────────────┘
+
+* 4. List the number of tweers per hour (24 results, one per hour), consider tweets only by users declaring location in USA.
+  
+  #+BEGIN_SRC
+  match (:User {location: "USA"}) -[:POSTED] -> (tweet:Tweet)
+    with left(right(tweet.created_str, 8), 2) as hour
+      with hour, count(hour) as hourCount order by hourCount desc return hour, hourCount
+  #+END_SRC
+  
+  ╒══════╤═══════════╕
+  │"hour"│"hourCount"│
+  ╞══════╪═══════════╡
+  │"16"  │6199       │
+  ├──────┼───────────┤
+  │"15"  │5901       │
+  ├──────┼───────────┤
+  │"14"  │5757       │
+  ├──────┼───────────┤
+  │"17"  │5039       │
+  ├──────┼───────────┤
+  │"12"  │4936       │
+  ├──────┼───────────┤
+  │"18"  │4442       │
+  ├──────┼───────────┤
+  │"09"  │4420       │
+  ├──────┼───────────┤
+  │"08"  │4412       │
+  ├──────┼───────────┤
+  │"13"  │4327       │
+  ├──────┼───────────┤
+  │"20"  │3923       │
+  ├──────┼───────────┤
+  │"10"  │3737       │
+  ├──────┼───────────┤
+  │"11"  │3657       │
+  ├──────┼───────────┤
+  │"19"  │3348       │
+  ├──────┼───────────┤
+  │"21"  │3310       │
+  ├──────┼───────────┤
+  │"23"  │3206       │
+  ├──────┼───────────┤
+  │"22"  │3126       │
+  ├──────┼───────────┤
+  │"07"  │3086       │
+  ├──────┼───────────┤
+  │"00"  │3033       │
+  ├──────┼───────────┤
+  │"01"  │2962       │
+  ├──────┼───────────┤
+  │"04"  │2891       │
+  ├──────┼───────────┤
+  │"02"  │2600       │
+  ├──────┼───────────┤
+  │"05"  │2214       │
+  ├──────┼───────────┤
+  │"03"  │2157       │
+  ├──────┼───────────┤
+  │"06"  │2119       │
+  ├──────┼───────────┤
+  │""    │2          │
+  └──────┴───────────┘
+
+* 5. Find the shortest path between the users:  @realdonaldtrump and @hillaryclinton.
+
+  #+BEGIN_SRC
+  match (trump:User {screen_name: "realdonaldtrump"}),
+    (hillary:User {screen_name: "hillaryclinton"}), 
+     path = shortestpath((trump)-[*]-(hillary))
+       return path
+  #+END_SRC
+
+* 6. Extend the database with relationship of type :CITES between trolls: we say that a troll :CITES another troll if the former retweeted some tweet(s) by the latter.
+
+match (u1:User) -[:POSTED] -> (:Tweet) -[:RETWEETED] -> (originalTweet) <- [:POSTED]- (u2:User)  merge (u1) -[cites:CITES] -> (u2)  return u1, cites, u2
+
