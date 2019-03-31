@@ -158,3 +158,20 @@
      podmienić ją na jakąś lżejszą.
 ** Cut Property
    - TODO
+
+* Set cover
+  - https://en.wikipedia.org/wiki/Set_cover_problem
+  - mamy zbiór (uniwersum) *U* oraz rodzinę jego podzbiorów *S*.
+    (i jakąś funkcję, *c*, która wyznacza koszty S_1, S_2 itd.)
+    chcemy znaleźć taki zbiór podzbiorów z S, że pokrywają U i
+    są możliwie najtańsze.
+    [[./img/set-cover-zachlanny.png]]
+
+* Algorytm Karatsuby (mnożenia)
+  TODO
+
+* Twierdzenie o rekursji uniwersalnej
+  TODO
+
+* Sieci przełączników
+** co to jest przełącznik?
