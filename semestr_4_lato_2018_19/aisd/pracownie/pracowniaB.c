@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #define SWAP(a, b) a = a ^ b; b = a ^ b; a = b ^ a
+
+typedef long long multiplication_t;
+
+typedef struct {
+  multiplication_t *vals;
+  int last_occupied;
+  int max_size;
+} maxheap_t;
 
 /*
  * The two input parameters.
@@ -12,14 +19,9 @@
 int MATRIX_SIZE;
 int FIRST_K;
 
+int PRINTED_SO_FAR = 0;
+multiplication_t LAST_PRINTED = -42;
 
-typedef long long multiplication_t;
-
-typedef struct {
-  multiplication_t *vals;
-  int last_occupied;
-  int max_size;
-} maxheap_t;
 
 int parent(int idx) {
   if (idx % 2 == 1)
@@ -63,41 +65,59 @@ multiplication_t peek_max(maxheap_t *heap) {
 void pop_max(maxheap_t *heap) {
   heap->vals[0] = heap->vals[heap->last_occupied];
   heap->vals[heap->last_occupied] = -1;
-  --heap->last_occupied;
+  heap->last_occupied -= 1;
   sift_down(heap, 0);
 }
 
 void insert_new(maxheap_t *heap, multiplication_t elem) {
+  /* printf("LAST OCCUPIED = %d\n", heap->last_occupied); */
+  /* printf("HEAP SIZE = %d\n", heap->max_size); */
   heap->vals[++heap->last_occupied] = elem;
   sift_up(heap, heap->last_occupied);
 }
 
+void flush_heap(maxheap_t *heap, multiplication_t threshold) {
+  for (int idx = 0; idx < heap->max_size; idx++) {
+    if (peek_max(heap) < threshold)
+      return;
+    if (PRINTED_SO_FAR == FIRST_K)
+      exit(0);
+
+    if (peek_max(heap) >= threshold && LAST_PRINTED != peek_max(heap)) {
+      ++PRINTED_SO_FAR;
+      LAST_PRINTED = peek_max(heap);
+      /* printf("LAST PRINTED = %lld\n", LAST_PRINTED); */
+      printf("%lld\n", peek_max(heap));
+    }
+    pop_max(heap);
+  }
+}
+
 int main() {
+  scanf("%d %d", &MATRIX_SIZE, &FIRST_K);
+
+  // TODO kopiec mniejszy niż K
+  multiplication_t *multarr = malloc(sizeof(multiplication_t) * FIRST_K);
+
   maxheap_t heap;
-  heap.max_size = 10;
+  heap.vals = multarr;
   heap.last_occupied = -1;
+  heap.max_size = FIRST_K;
 
-  multiplication_t arr[10];
-  memset(arr, -1, 10 * sizeof(multiplication_t));
+  for (int column = MATRIX_SIZE; column >= 1; column--) {
+    multiplication_t lower_left_val = column * (multiplication_t)MATRIX_SIZE;
+    if (column != MATRIX_SIZE)
+      flush_heap(&heap, lower_left_val);
 
-  heap.vals = arr;
-
-  insert_new(&heap, 8);
-  insert_new(&heap, 7);
-  insert_new(&heap, 10);
-  insert_new(&heap, 1);
-  insert_new(&heap, 3);
-  insert_new(&heap, 5);
-  insert_new(&heap, 6);
-  insert_new(&heap, 2);
-  insert_new(&heap, 4);
-  insert_new(&heap, 9);
-
-  for (short idx = 0; idx < 10; idx++) {
-    /* printf("%lld\n", arr[idx]); */
-    printf("%lld\n", peek_max(&heap));
-    pop_max(&heap);
+    for (int row = MATRIX_SIZE; row - column >= 0; row--) {
+      /* printf("%lld\n", column*row); */
+      if (heap.last_occupied >= heap.max_size - 1)
+        flush_heap(&heap, lower_left_val);
+      insert_new(&heap, column * (multiplication_t)row);
+      /* printf("COLUMN = %d, ROW = %d, MULT = %lld\n", column, row, column*(multiplication_t)row); */
+      /* printf("HEAP LAST = %d\n", heap.last_occupied); */
+    }
   }
 
-  return 0;
+  flush_heap(&heap, 0);
 }
