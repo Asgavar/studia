@@ -1,0 +1,6 @@
+* ps(1)
+  - output formats
+  - opcje, m.in. drzewo jak w ~pstree(1)~
+* pstree(1)
+  - korzeń defaultowo w ~init~, ale może być w *0*
+  - procesy wyświetlane jako ~{nazwa}~
