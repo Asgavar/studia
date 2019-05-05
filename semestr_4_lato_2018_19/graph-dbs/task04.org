@@ -1,0 +1,27 @@
+* Task 4.
+  1. What is the purpose of using apoc.do.when in this code?
+  2. Install Graph Algorithm plugin for neo4j (use the newest version, i.e., 3.5.4 as recently there were multiple changes).
+  3. Compute the pagerank value for each of the airports. Show the values in descending order (use limit 100).
+  4. Compute the connected components of the graph. How many components are there?
+  5. List all stops on (one of) the shortest route between the airports 'SPN' and 'IAG'.
+
+* PageRank
+  #+BEGIN_CODE
+  CALL algo.pageRank.stream(null, null, {iterations:25, dampingFactor:0.85})
+  YIELD nodeId, score
+
+  RETURN algo.asNode(nodeId).name AS page,score
+  ORDER BY score DESC
+  LIMIT 100
+  #+END_CODE
+
+* Strongly Connected Components
+  #+BEGIN_CODE
+  CALL algo.unionFind.stream(null, null, {})
+  YIELD nodeId, setId
+
+  RETURN count(nodeId) AS airportCount, setId
+  ORDER BY airportCount DESC
+  #+END_CODE
+
+  5614 komponentów, z czego wszystkie poza jednym to _dangling lotniska_.
