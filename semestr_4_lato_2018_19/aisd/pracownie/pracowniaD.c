@@ -16,8 +16,8 @@ typedef struct {
 
 /* __attribute__((always_inline)) inline */ double
 distance(point_t p1, point_t p2) {
-  int x_dist = pow(p1.x - p2.x, 2);
-  int y_dist = pow(p1.y - p2.y, 2);
+  double x_dist = pow(p1.x - p2.x, 2);
+  double y_dist = pow(p1.y - p2.y, 2);
 
   return sqrt(x_dist + y_dist);
 }
