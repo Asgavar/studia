@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct {
@@ -29,6 +30,24 @@ horizontal_dist(point_t point_in_question, point_t middle) {
 int
 vertical_dist(const void *point1, const void *point2) {
   return abs(((point_t*)point1)->y - ((point_t*)point2)->y);
+}
+
+shortest_distance_t
+calculate_in_strip(point_t strip[], int strip_count) {
+  int minimal_dist = -42;
+  shortest_distance_t current_min;
+
+  for (int x = 0; x < strip_count; x++) {
+    for (int y = 0; y < strip_count; y++) {
+      int this_dist = distance(strip[x], strip[y]);
+      if (this_dist > minimal_dist) {
+        minimal_dist = this_dist;
+        current_min = (shortest_distance_t){true, strip[x], strip[y]};
+      }
+    }
+  }
+
+  return current_min;
 }
 
 shortest_distance_t
@@ -64,11 +83,25 @@ calculate_shortest(point_t points[], int count, int leftIncl, int rightIncl) {
 
   qsort(strip, strip_cur, sizeof(point_t), &vertical_dist);
 
-  // TODO
-  return really_shortest;
+  shortest_distance_t min_in_strip = calculate_in_strip(strip, strip_cur);
+  double min_strip_dist = distance(min_in_strip.p1, min_in_strip.p2);
+
+  return min_strip_dist < shortest_dist ? min_in_strip : really_shortest;
 }
 
 int
 main() {
-  //
+  int linecount;
+  scanf("%d", &linecount);
+
+  point_t points[linecount];
+
+  for (int idx = 0; idx < linecount; idx++) {
+    int x, y;
+    scanf("%d %d", &x, &y);
+    point_t new_point = {x, y};
+    points[idx] = new_point;
+  }
+
+  shortest_distance_t answer = calculate_shortest(points, linecount, 0, linecount-1);
 }
