@@ -22,18 +22,21 @@ distance(point_t p1, point_t p2) {
   return sqrt(x_dist + y_dist);
 }
 
-shortest_distance_t brute_force(point_t points[], int count) {
+shortest_distance_t brute_force(point_t points[], int leftIncl, int rightIncl) {
   double min = INT_MAX - 0.1;
   shortest_distance_t answer;
 
-  for (int i = 0; i < count; i++)
-    for (int j = i + 1; j < count; j++)
+  for (int i = leftIncl; i <= rightIncl; i++)
+    for (int j = i + 1; j <= rightIncl; j++)
       if (distance(points[i], points[j]) < min) {
+        /* printf("found\n"); */
         min = distance(points[i], points[j]);
         answer.p1 = points[i];
         answer.p2 = points[j];
       }
 
+  /* printf("brute force answer -> X1, Y1 = %d, %d --- X2, Y2 = %d, %d\n", */
+         /* answer.p1.x, answer.p1.y, answer.p2.x, answer.p2.y); */
   return answer;
 }
 
@@ -44,7 +47,11 @@ horizontal_dist(point_t point_in_question, point_t middle) {
 
 int
 vertical_dist(const void *point1, const void *point2) {
-  return abs(((point_t*)point1)->y - ((point_t*)point2)->y);
+  return ((point_t*)point1)->y - ((point_t*)point2)->y;
+}
+
+int void_ptrs_horizontal_dist(const void *point1, const void *point2) {
+  return ((point_t*)point1)->x - ((point_t*)point2)->x;
 }
 
 shortest_distance_t
@@ -54,7 +61,7 @@ calculate_in_strip(point_t strip[], int strip_count, double min_outside, shortes
 
   for (int x = 0; x < strip_count; x++) {
     for (int y = x+1; y < strip_count && (strip[y].y - strip[x].y) < minimal_dist; y++) {
-      int this_dist = distance(strip[x], strip[y]);
+      double this_dist = distance(strip[x], strip[y]);
       if (this_dist < minimal_dist) {
         minimal_dist = this_dist;
         current_min.p1 = strip[x];
@@ -63,11 +70,11 @@ calculate_in_strip(point_t strip[], int strip_count, double min_outside, shortes
     }
   }
 
-  printf("------calculate in strip------\n");
-  printf("current min p1 X = %d\n", current_min.p1.x);
-  printf("current min p1 Y = %d\n", current_min.p1.y);
-  printf("current min p2 X = %d\n", current_min.p2.x);
-  printf("current min p2 Y = %d\n", current_min.p2.y);
+  /* printf("------calculate in strip------\n"); */
+  /* printf("current min p1 X = %d\n", current_min.p1.x); */
+  /* printf("current min p1 Y = %d\n", current_min.p1.y); */
+  /* printf("current min p2 X = %d\n", current_min.p2.x); */
+  /* printf("current min p2 Y = %d\n", current_min.p2.y); */
   return current_min;
 }
 
@@ -75,11 +82,11 @@ shortest_distance_t
 calculate_shortest(point_t points[], int count, int leftIncl, int rightIncl) {
   int howlongisthisstep = rightIncl - leftIncl + 1;
   if (howlongisthisstep <= 3) {
-    printf("leci brute force\n");
-    return brute_force(points, count);
+    /* printf("leci brute force\n"); */
+    return brute_force(points, leftIncl, rightIncl);
   }
 
-  printf("jedziemy normalnie\n");
+  /* printf("jedziemy normalnie\n"); */
 
   int middle_point = (leftIncl + rightIncl) / 2;
 
@@ -98,7 +105,6 @@ calculate_shortest(point_t points[], int count, int leftIncl, int rightIncl) {
 
   for (int idx = leftIncl; idx <= rightIncl; idx++) {
     if (horizontal_dist(points[idx], points[middle_point]) <= shortest_dist) {
-      /* strip[strip_cur] = points[idx]; */
       ++strip_cur;
     }
   }
@@ -118,8 +124,9 @@ calculate_shortest(point_t points[], int count, int leftIncl, int rightIncl) {
   }
 
   //
-  for (int i = 0; i < strip_cur; i++)
-    printf("ze stripa -> %d\t%d\n", strip[i].x, strip[i].y);
+  /* printf("shortest dist -> %f\n", shortest_dist); */
+  /* for (int i = 0; i < strip_cur; i++) */
+  /*   printf("ze stripa -> %d\t%d\n", strip[i].x, strip[i].y); */
   //
   qsort(strip, strip_cur, sizeof(point_t), &vertical_dist);
 
@@ -144,6 +151,8 @@ main() {
     new_point.y = y;
     points[idx] = new_point;
   }
+
+  qsort(points, linecount, sizeof(point_t), &void_ptrs_horizontal_dist);
 
   shortest_distance_t answer = calculate_shortest(points, linecount, 0, linecount-1);
 
