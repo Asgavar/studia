@@ -15,3 +15,4 @@ workbench.xmi
 _build/
 *.log
 *.cache
+.ipynb_checkpoints/
