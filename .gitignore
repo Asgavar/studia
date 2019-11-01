@@ -16,3 +16,4 @@ _build/
 *.log
 *.cache
 .ipynb_checkpoints/
+octave-workspace
