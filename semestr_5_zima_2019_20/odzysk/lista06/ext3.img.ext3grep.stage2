@@ -1,0 +1,6 @@
+# Stage 2 data for ext3.img.
+# Inodes path and directory blocks.
+# INODE PATH BLOCK [BLOCK ...]
+2 '' 204
+11 'lost+found' 205
+# END
