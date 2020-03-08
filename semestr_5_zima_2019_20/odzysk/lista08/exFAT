@@ -1,7 +1,0 @@
-- dalej case-sensitive : /
-- size pliku 64-bitowy
-- klastry do 32MB
-- brak fizycznego . i ..
-- bit w katalogu do zignorowania FATu, cos a'la bieda-extent
-- mozliwosc prealokacji -> pliki mają dwa rozmiary, fizyczna 'dlugosc' i Valid Data Length
-- checksums

@@ -1,6 +1,0 @@
-Zadanie 3.
-==========
-
-- semantyka C nie pozwala na re-ordering (standard)
-- czytanie pomiedzy slowami (np 2,3,4,5 zamiast 1,2,3,4) zajmuje dwa cykle
-- co z 5-bajtowymi typami?

@@ -1,7 +1,0 @@
-x = 10
-druga: print x
-x = x - 1
-if x > 0 goto 6
-goto 7
-goto druga
-print "koniec"

@@ -1,7 +1,0 @@
-# Stage 1 data for ext3.img.
-# Inodes and directory start blocks that use it for dir entry '.'.
-# INODE : BLOCK [BLOCK ...]
-2 : 204 227 236
-11 : 205
-# Extended directory blocks.
-# END
